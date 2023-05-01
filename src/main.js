@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primeicons/primeicons.css';
 import Tooltip from 'primevue/tooltip';
 import App from './App.vue'

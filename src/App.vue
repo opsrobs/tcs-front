@@ -2,41 +2,42 @@
   <div class="container">
     <div class="sidenav">
       <div class="link-sidebar">
-        <router-link  id="text-router" to="/avaliacao">
-          <span class="pi pi-file-edit" id="icon-router"  v-tooltip="'Nova Avaliação'"></span>
+        <router-link id="text-router" to="/avaliacao">
+          <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
           <span >Nova Avaliação</span>
         </router-link>
       </div>
       <div class="link-sidebar">
-        <router-link  id="text-router" to="/">
+        <router-link id="text-router" to="/">
           <span class="pi pi-home" id="icon-router" v-tooltip.right="'Dashboard'"></span>
-          <span >Dashboard</span>
+          <span>Dashboard</span>
         </router-link>
       </div>
       <div class="link-sidebar">
-        <router-link  id="text-router" to="/">
+        <router-link id="text-router" to="/">
           <span class="pi pi-bell " id="icon-router" v-tooltip.right="'Notificações'"></span>
-          <span >Notificações</span>
+          <span>Notificações</span>
         </router-link>
       </div>
       <div class="link-sidebar">
-        <router-link  id="text-router" to="/">
-          <span class="pi pi-chart-pie" id="icon-router"  v-tooltip.right="'Histórias de Usuario'"></span>
-          <span >Histórias de Usuario</span>
+        <router-link id="text-router" to="/">
+          <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
+          <span>Histórias de Usuario</span>
         </router-link>
       </div>
       <div class="link-footer">
         <div class="link-sidebar">
-          <router-link  id="text-router" to="/about">
-            <span class="pi pi-sign-out" id="icon-router"  v-tooltip.right="'About Me'"></span>
-            <span >Sair</span>
+          <router-link id="text-router" to="/about">
+            <span class="pi pi-sign-out" id="icon-router" v-tooltip.right="'About Me'"></span>
+            <span>Sair</span>
           </router-link>
         </div>
         <div class="link-sidebar" >
-          <router-link id="text-router" to="/about">
-            <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'"></span>
-            <span >Modo Escuro
+          <router-link id="text-router" to="/about" >
+            <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'" ></span>
+            <span>Modo Escuro
             </span>
+            <InputSwitch class="switch-space" id="darkmode" v-model="checked" />
           </router-link>
         </div>
       </div>
@@ -48,7 +49,7 @@
 
 <script>
 // import Sidebar from 'primevue/sidebar';
-// import InputSwitch from 'primevue/inputswitch';
+import InputSwitch from 'primevue/inputswitch';
 // import Button from 'primevue/button';
 import { defineComponent } from 'vue';
 
@@ -56,7 +57,8 @@ export default defineComponent({
   data() {
     return {
       user: "Usuário Loagado",
-      visible: true
+      visible: true,
+      checked: false
 
     }
   },
@@ -67,11 +69,18 @@ export default defineComponent({
 
   },
   methods: {
+    darkmode() {
+      const $html = document.querySelector('html');
+      const $switch = document.querySelector('#darkmode');
 
+      $switch.addEventListener('change', function(){
+        $html.classList.toggle('dark-mode')
+      })
+    }
   },
   components: {
     // Sidebar,
-    // InputSwitch
+    InputSwitch
     // Button
   },
 })
@@ -88,11 +97,48 @@ export default defineComponent({
   color: #2c3e50;
 }
 
+:root{
+  --bg-off: white;
+}
+
+#darkmode{
+
+}
+.switch-space {
+  margin-left: 2vh;
+}
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background: #09121a;
+}
+
+.p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider {
+  background: #c70dec;
+}
+
+.p-inputswitch .p-inputswitch-slider {
+  background: #4c4e50;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  border-radius: 30px;
+}
+
+.p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider {
+  background: #4c4e50;
+}
+
+.p-inputswitch .p-inputswitch-slider:before {
+  background: #80179b;
+}
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
+  background: #80179b;
+}
+
 /* The sidebar menu */
 .sidenav {
   height: 100%;
   /* Full-height: remove this if you want "auto" height */
-  width: 250px;
+  width: 15%;
   /* Set the width of the sidebar */
   position: fixed;
   /* Fixed Sidebar (stay in place on scroll) */
@@ -101,11 +147,12 @@ export default defineComponent({
   top: 0;
   /* Stay at the top */
   left: 0;
-  background-color: #afa8a8;
+  /* background-color: #afa8a8; */
   /* Black */
   /* overflow-x: hidden; */
   /* Disable horizontal scroll */
   padding-top: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* The navigation menu links */
@@ -137,7 +184,7 @@ export default defineComponent({
   .sidenav a {
     font-size: 18px;
   }
-  
+
 }
 
 
@@ -176,7 +223,7 @@ nav a.router-link-exact-active {
   width: 100%;
 }
 
-#icon-router{
+#icon-router {
   margin-right: 5px;
 }
 
@@ -184,5 +231,4 @@ a:-webkit-any-link {
   color: black;
   cursor: pointer;
   text-decoration: none;
-}
-</style>
+}</style>
