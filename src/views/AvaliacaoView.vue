@@ -7,12 +7,12 @@
             </div>
             <div class="output-user">
                 <div>
-                    <Textarea v-model="prototype.pattern_suggestion" class="user-text" :disabled="true" placeholder="output user story" autoResize rows="12.5"
-                        cols="100" />
+                    <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
+                        placeholder="output user story" autoResize rows="12.5" cols="100" />
                 </div>
                 <div>
-                    <Textarea class="user-text" :disabled="true" placeholder="output user story" autoResize rows="12.5"
-                        cols="100" />
+                    <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
+                        placeholder="output user story" autoResize rows="6" cols="100" />
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@ export default {
             })
                 .then(response => {
                     console.log(response.data),
-                    this.prototype.pattern_suggestion = this.extrair(response.data)
+                        this.prototype.pattern_suggestion = this.extrair(response.data)
                 })
                 .catch(error => {
                     console.error(error);
@@ -84,10 +84,10 @@ export default {
         },
         clear() {
             this.prototype.input_us = ""
-            this.prototype.pattern_suggestion=null
+            this.prototype.pattern_suggestion = null
         },
         extrair(prototipo) {
-            const regex = /<div class="result">(.*?)<\/div>/s; 
+            const regex = /<div class="result">(.*?)<\/div>/s;
             const resultado = regex.exec(prototipo);
 
             if (resultado === null) {
@@ -114,7 +114,7 @@ export default {
                     console.error(error);
                 });
         },
-        
+
     },
     components: {
         Textarea,
@@ -129,17 +129,20 @@ export default {
     margin-right: 5vw;
 }
 
-
+.clear-story{
+    background-color: blueviolet;
+}
 
 .avaliacao {
     margin-left: 15%;
-    width: 84%;
+    width: calc(84% - 10px);
     float: right;
     justify-content: center;
     /* margin-left: 250px; */
     position: absolute;
     bottom: 0;
     top: 0;
+    max-width: 100%;
 }
 
 .grid-text-style {
@@ -163,7 +166,10 @@ export default {
     border: 2px solid;
     border-radius: 5px;
     transition: border-color 0.3s ease-out;
+    width: max(95%, 15vh) !important;
+    /* height: calc(15vh - 4px) !important; */
 }
+
 
 .user-text:hover {
     border-color: rgb(201, 14, 207);
@@ -177,5 +183,21 @@ export default {
     top: 0;
     left: 0;
     padding-top: 20px;
+}
+
+@media screen and (max-height: 750px) {
+    .user-text {
+        margin-right: 1vh;
+        border-radius: 5px;
+        transition: border-color 0.3s ease-out;
+        width: max(95%, 15vh) !important;
+        height: max(75%, 15vh) !important;
+    }
+
+    .submit-story {
+        position: relative;
+        bottom: 20%;
+}
+
 }
 </style>
