@@ -1,8 +1,6 @@
+# ANÁLISE DE HISTÓRIAS DE USUÁRIO UTILIZANDO A INTELIGÊNCIA ARTIFICIAL GPT-3 
 
-
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
-
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+## _Clone e Instalção do repositorio/projeto_
 
 Primeiramente, copie o link ou faça o downloado do arquivo .zip
  - Com o Arquivo devidamente baixado, descompacte o projeto, abra a pasta e digite cmd no caminho do diretorio.
