@@ -14,6 +14,8 @@ Primeiramente, copie o link ou faça o downloado do arquivo .zip
 ```
 
 Nesse momento é esperado que o node.js já esteja instalado na máquina, caso contrario faça o downlod
+
+
 [![N|Solid](https://cdn.iconscout.com/icon/free/png-256/free-node-js-3-1174937.png)](https://nodejs.org/dist/v18.16.0/node-v18.16.0-x64.msi)
 
 ## Installation Vue.js
