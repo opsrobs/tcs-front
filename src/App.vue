@@ -171,7 +171,7 @@ export default defineComponent({
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
-  background-color: #9d2bb4;
+  color: #9d2bb4;
 }
 
 

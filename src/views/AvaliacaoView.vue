@@ -5,6 +5,8 @@
                 <Textarea v-model="prototype.input_us" class="user-text" placeholder="input user story" autoResize rows="25"
                     cols="100" />
             </div>
+            <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" />
+
             <div class="output-user">
                 <div>
                     <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
@@ -16,8 +18,7 @@
                 </div>
             </div>
         </div>
-        <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" />
-        <my-button class="submit-story" label="Clear" @click="clear()" />
+        <!-- <my-button class="submit-story" label="Clear" @click="clear()" /> -->
     </div>
 </template>
   
@@ -76,7 +77,7 @@ export default {
             })
                 .then(response => {
                     console.log(response.data),
-                        this.prototype.pattern_suggestion = this.extrair(response.data)
+                        this.prototype.pattern_suggestion = response.data.trimStart();
                 })
                 .catch(error => {
                     console.error(error);
@@ -125,11 +126,17 @@ export default {
   
 <style>
 .submit-story {
-    float: right;
-    margin-right: 5vw;
+    /* float: right; */
+    /* margin-right: 5vw; */
+    display: flex;
+    height: 5vh;
+    width: 10vh;
+    position: relative;
+    top: max(15vh, 250px);
+    font-size: min(18px,2vh);
 }
 
-.clear-story{
+.clear-story {
     background-color: blueviolet;
 }
 
@@ -197,7 +204,7 @@ export default {
     .submit-story {
         position: relative;
         bottom: 20%;
-}
+    }
 
 }
 </style>
