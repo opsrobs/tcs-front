@@ -13,7 +13,7 @@
                         placeholder="output user story" autoResize rows="12.5" cols="100" />
                 </div>
                 <div>
-                    <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
+                    <Textarea v-model="prototype.smells_id" class="user-text" readonly
                         placeholder="output user story" autoResize rows="6" cols="100" />
                 </div>
             </div>
@@ -76,12 +76,17 @@ export default {
                 data: formData
             })
                 .then(response => {
-                    console.log(response.data),
-                        this.prototype.pattern_suggestion = response.data.trimStart();
+                    console.log(response.data.historia),
+                        this.prototype.pattern_suggestion = response.data.historia.trimStart(),
+                        console.log(this.prototype.pattern_suggestion)
+                        this.prototype.smells_id = response.data.smell.trimStart()
+                        // this.getResponse(this.prototype.pattern_suggestion)
+
                 })
                 .catch(error => {
                     console.error(error);
                 });
+
         },
         clear() {
             this.prototype.input_us = ""
@@ -100,16 +105,18 @@ export default {
         },
         getResponse(prototipo) {
             const formData = new FormData();
-            formData.append('prompt', prototipo);
+            formData.append('detalhe', prototipo);
             //   formData.append('campo2', 'valor2');
-            console.log(Array.from(formData.entries()));
-
+            console.log(Array.from(formData.entries()))
+            console.log(prototipo)
             axios({
-                url: 'http://127.0.0.1:5000/historias',
-                method: 'GET'
+                url: 'http://127.0.0.1:5000/getsmell',
+                method: 'GET',
+                data: formData
+
             })
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response.data)
                 })
                 .catch(error => {
                     console.error(error);
@@ -133,7 +140,7 @@ export default {
     width: 10vh;
     position: relative;
     top: max(15vh, 250px);
-    font-size: min(18px,2vh);
+    font-size: min(18px, 2vh);
 }
 
 .clear-story {
