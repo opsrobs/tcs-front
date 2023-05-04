@@ -13,8 +13,8 @@
                         placeholder="output user story" autoResize rows="12.5" cols="100" />
                 </div>
                 <div>
-                    <Textarea v-model="prototype.smells_id" class="user-text" readonly
-                        placeholder="output user story" autoResize rows="6" cols="100" />
+                    <Textarea v-model="prototype.smells_id" class="user-text" readonly placeholder="output user story"
+                        autoResize rows="6" cols="100" />
                 </div>
             </div>
         </div>
@@ -76,17 +76,21 @@ export default {
                 data: formData
             })
                 .then(response => {
-                    console.log(response.data.historia),
+                    console.log(response.data),
                         this.prototype.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototype.pattern_suggestion)
-                        this.prototype.smells_id = response.data.smell.trimStart()
-                        // this.getResponse(this.prototype.pattern_suggestion)
+                    this.prototype.smells_id = this.removeSpaces(response.data.smell).trimStart()
+                    // this.getResponse(this.prototype.pattern_suggestion)
 
                 })
                 .catch(error => {
                     console.error(error);
                 });
 
+        },
+        removeSpaces(text) {
+            let startIndex = text.indexOf('\n\n') + 2
+            return text.slice(startIndex)
         },
         clear() {
             this.prototype.input_us = ""
