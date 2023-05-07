@@ -1,29 +1,40 @@
 <template>
-    <div class="avaliacao">
-        <div class="grid-text-style">
-            <div>
-                <Textarea v-model="prototype.input_us" class="user-text" placeholder="input user story" autoResize rows="25"
-                    cols="100" />
+    <div style="position: relative;">
+        <!-- <my-Loading class="loading" :active='isLoading' :is-full-page="fullPage" :loader='loader' /> -->
+        <div class="avaliacao">
+            <div class="grid-text-style">
+                <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
+                </div>
+                <div style="display: flexbox;">
+                    <Textarea v-model="prototype.input_us" class="user-text" placeholder="input user story" autoResize
+                        rows="25" cols="100" />
+                </div>
+                <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" /> -->
+                <div class="output-user">
+                    <!-- <span>s</span> -->
+                    <div>
+                        <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
+                            placeholder="output user story" autoResize rows="12.5" cols="100" />
+                    </div>
+                    <!-- <span>s</span> -->
+                    <div>
+                        <Textarea v-model="prototype.smells_id" class="user-text" readonly placeholder="Requirements smells"
+                            autoResize rows="6" cols="100" />
+                    </div>
+                </div>
             </div>
             <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" />
 
-            <div class="output-user">
-                <div>
-                    <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
-                        placeholder="output user story" autoResize rows="12.5" cols="100" />
-                </div>
-                <div>
-                    <Textarea v-model="prototype.smells_id" class="user-text" readonly placeholder="output user story"
-                        autoResize rows="6" cols="100" />
-                </div>
-            </div>
+
         </div>
-        <!-- <my-button class="submit-story" label="Clear" @click="clear()" /> -->
+
+        <LoaderView v-show="isLoading" />
     </div>
 </template>
   
 <script>
 import Textarea from 'primevue/textarea';
+import LoaderView from './LoaderView.vue';
 const axios = require('axios');
 
 // import Button from 'primevue/button';
@@ -51,6 +62,9 @@ export default {
                 }
 
             ],
+            isLoading: false,
+            fullPage: false,
+            loader: 'bars',
             modelAdd: false,
             modelUpdate: false,
             prototype: {
@@ -65,6 +79,7 @@ export default {
     },
     methods: {
         sendRequest(prototipo) {
+            this.isLoading = true
             const formData = new FormData();
             formData.append('prompt', prototipo);
             //   formData.append('campo2', 'valor2');
@@ -79,7 +94,8 @@ export default {
                     console.log(response.data),
                         this.prototype.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototype.pattern_suggestion)
-                    this.prototype.smells_id = this.removeSpaces(response.data.smell).trimStart()
+                    this.prototype.smells_id = this.removeSpaces(response.data.smell).trimStart(),
+                        this.isLoading = false
                     // this.getResponse(this.prototype.pattern_suggestion)
 
                 })
@@ -130,21 +146,33 @@ export default {
     },
     components: {
         Textarea,
+        LoaderView
     }
 }
 
 </script>
   
 <style>
-.submit-story {
-    /* float: right; */
-    /* margin-right: 5vw; */
+/* .submit-story { 
+    float: right; 
+    margin-right: 25vw; 
     display: flex;
     height: 5vh;
     width: 10vh;
     position: relative;
     top: max(15vh, 250px);
     font-size: min(18px, 2vh);
+} */
+.loading {
+    color: red
+}
+
+.submit-story {
+    margin-right: 6vw;
+    top: 10px;
+    position: relative;
+    background-color: #9d2bb4;
+    border: none;
 }
 
 .clear-story {
@@ -217,5 +245,27 @@ export default {
         bottom: 20%;
     }
 
+}
+
+.c-loader {
+    animation: is-rotating 1s infinite;
+    border: 6px solid #e5e5e5;
+    border-radius: 50%;
+    border-top-color: #51d4db;
+    height: 50px;
+    width: 50px;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
+}
+
+
+
+@keyframes is-rotating {
+    to {
+        transform: rotate(1turn);
+    }
 }
 </style>

@@ -30,6 +30,7 @@ npm install -g @vue/cli
 npm run build
 npm install primevue
 npm install primevue@3.7.2 primeicons
+npm install chart.js
  ```
 
 > Note: Caso tudo tenha ocorrido bem você deve ver executar o comando `--npm run serve` 
