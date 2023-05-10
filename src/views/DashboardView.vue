@@ -1,92 +1,80 @@
 <template>
     <div>
-        <span class="big-number"> Quantidade de Historias Avaliadas {{ total_us }}</span>
+        <span class="big-number"> Quantidade de Histórias Avaliadas {{ total_us }}</span>
         <div class="charts-dash">
             <div class="cards-chart">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
 
-                <div class="card ">
-                    <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
+                <div class="card" id="chart-user">
+                    <div v-if="isNotError">
+                        <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
+                    </div>
+                    <div v-else>
+                        <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300" height="300" />
+                    </div>
                 </div>
-                <div class="card">
-                    <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
-                </div>
-                <div class="card ">
-                    <Chart type="bar" :data="chartData" :options="chartOptions" class="h-30rem" />
-                </div>
-                <div class="card">
-                    <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
-                </div>
+                <div class="top-users"> </div>
 
             </div>
         </div>
         <LoaderView v-show="isLoading" />
-
     </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import LoaderView from './LoaderView.vue';
 import Chart from 'primevue/chart';
 const axios = require('axios');
 
-
-
 onMounted(() => {
-    fetchSmells()
-    // chartData.value = setChartData(smellsList);
-    chartOptions.value = setChartOptions();
+    fetchSmells();
+    fetchStories()
 });
-let isLoading = ref(true);
-const total_us = ref(20)
+
+const isLoading = ref(true);
+const isNotError = ref(true);
+const total_us = ref(20);
 const chartData = ref();
 const chartOptions = ref();
-let smellsList = [];
+const smellsList = ref([]);
 
 
 async function fetchSmells() {
     try {
-        const response = await axios.get('http://127.0.0.1:5000/get_smell_status'); // Substitua "URL_DA_API" pela URL correta da sua API
-        const smells = response.data; // Supondo que a resposta da API seja um array de objetos com os atributos 'qtd' e 'nome'
-        smellsList = smells;
-        console.log(smellsList)
+        const response = await axios.get('http://127.0.0.1:5000/get_smell_status');
+        smellsList.value = response.data;
         isLoading.value = false;
-        chartData.value = setChartData(smellsList);
+        chartData.value = setChartData(smellsList.value);
     } catch (error) {
+        isNotError.value = false;
+        isLoading.value = false;
         console.error('Erro ao buscar os smells:', error);
     }
 }
 
+async function fetchStories() {
+    try {
+        const response = await axios.get('http://127.0.0.1:5000/gethistorias');
+        console.log(response.data);
+    } catch (error) {
+        isNotError.value = false;
+        console.error('Erro ao buscar os smells:', error);
+    }
+}
 
-const setChartData = (smell) => {
-    let dados = [];
-
+function setChartData(smells) {
     const documentStyle = getComputedStyle(document.documentElement);
+    const labels = [];
+    const valores = [];
 
-    for (let chave in smell) {
-        const valor = smell[chave];
-
-        dados.push({
-            nome: chave,
-            tot: valor
-        });
+    for (const chave in smells) {
+        labels.push(chave);
+        valores.push(smells[chave]);
     }
-
-    let labels = [];
-    let valores = [];
-
-    for (let i = 0; i < dados.length; i++) {
-        labels.push(dados[i].nome);
-        valores.push(dados[i].tot);
-    }
-    console.log(labels)
-
-
 
     return {
-        labels: labels,
+        labels,
         datasets: [
             {
                 label: 'Smells identificados',
@@ -97,9 +85,9 @@ const setChartData = (smell) => {
             }
         ]
     };
-};
+}
 
-const setChartOptions = () => {
+function setChartOptions() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
@@ -135,18 +123,35 @@ const setChartOptions = () => {
         }
     };
 }
+
+setChartOptions();
 </script>
 <style>
 .charts-dash {
     margin-left: 15%;
     width: calc(84% - 10px);
-    /* float: right; */
     justify-content: center;
-    /* margin-left: 250px; */
     position: relative;
     bottom: 0;
-    /* top: max(10vh, 150px); */
+    display: inline-block;
     max-width: 100%;
+}
+
+#chart-user {
+    margin: 2px;
+    border: 1px dashed;
+    border-radius: 1%;
+}
+
+.top-users {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2px;
+    border: 1px dashed;
+    border-radius: 1%;
+    height: 100%;
 }
 
 .cards-chart {
@@ -155,7 +160,7 @@ const setChartOptions = () => {
     display: grid;
     margin: 3px;
     grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 200px;
+    /* grid-auto-rows: 200px; */
 }
 
 .big-number {
@@ -163,6 +168,8 @@ const setChartOptions = () => {
     font-size: 2.5rem;
     font-weight: 600;
     position: relative;
+    float: right;
+    margin-right: max(4vh, 30px);
 }
 
 .c-loader {
@@ -172,7 +179,6 @@ const setChartOptions = () => {
     border-top-color: #51d4db;
     height: 50px;
     width: 50px;
-
     position: fixed;
     top: 50%;
     left: 50%;
