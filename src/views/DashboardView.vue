@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span class="big-number"> Quantidade de Histórias Avaliadas {{ total_us }}</span>
+        <span class="big-number" v-tooltip.right="'Quantidade de User Stories consultadas.'"> {{ total_us }}</span>
         <div class="charts-dash">
             <div class="cards-chart">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
@@ -11,10 +11,17 @@
                         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
                     </div>
                     <div v-else>
-                        <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300" height="300" />
+                        <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300"
+                            height="300" />
                     </div>
                 </div>
-                <div class="top-users"> </div>
+                <div class="top-users">
+                    <span v-for="story in topThreeStories" :key="story.id">
+                        <div style="text-align: justify;">
+                            <span class="us_content" style="margin: 2px;">{{ story.historia_input }}</span>
+                        </div>
+                    </span>
+                </div>
 
             </div>
         </div>
@@ -22,7 +29,7 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import LoaderView from './LoaderView.vue';
 import Chart from 'primevue/chart';
 const axios = require('axios');
@@ -34,10 +41,11 @@ onMounted(() => {
 
 const isLoading = ref(true);
 const isNotError = ref(true);
-const total_us = ref(20);
+const total_us = ref();
 const chartData = ref();
 const chartOptions = ref();
 const smellsList = ref([]);
+let stories = ref([]);
 
 
 async function fetchSmells() {
@@ -53,15 +61,34 @@ async function fetchSmells() {
     }
 }
 
+const topThreeStories = computed(() => {
+  const totalStories = stories.value.length;
+  const startIndex = Math.max(totalStories - 3, 0);
+  return stories.value.slice(startIndex);
+});
+
+
 async function fetchStories() {
     try {
         const response = await axios.get('http://127.0.0.1:5000/gethistorias');
-        console.log(response.data);
+        const responseData = response.data;
+        stories.value = [];
+        for (const story of responseData) {
+            stories.value.push({
+                id: story.id,
+                historia_input: story.UserStorie,
+                historia_output: story.UserStoriePadronizada
+            });
+        }
+
+        total_us.value = Array.isArray(responseData) ? responseData.length : Object.keys(responseData).length;
     } catch (error) {
         isNotError.value = false;
-        console.error('Erro ao buscar os smells:', error);
+        console.error('Erro ao buscar as histórias:', error);
     }
 }
+
+
 
 function setChartData(smells) {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -80,7 +107,7 @@ function setChartData(smells) {
                 label: 'Smells identificados',
                 data: valores,
                 fill: false,
-                borderColor: documentStyle.getPropertyValue('--blue-500'),
+                borderColor: documentStyle.getPropertyValue('--pink-500'),
                 tension: 0.6
             }
         ]
@@ -144,7 +171,6 @@ setChartOptions();
 }
 
 .top-users {
-    display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -152,6 +178,14 @@ setChartOptions();
     border: 1px dashed;
     border-radius: 1%;
     height: 100%;
+
+    display: grid;
+    grid-template-rows: auto;
+}
+
+.us_content {
+    margin: 3px;
+    text-align: justify;
 }
 
 .cards-chart {
@@ -164,8 +198,9 @@ setChartOptions();
 }
 
 .big-number {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 2.5rem;
+    font-family: 'Kalam', cursive;
+    /* font-family: 'Montserrat', sans-serif; */
+    font-size: max(2.5rem, 44px);
     font-weight: 600;
     position: relative;
     float: right;
