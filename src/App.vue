@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container">
+  <!--<div>
+     <div class="container">
       <div class="sidenav">
         <div class="link-sidebar">
           <router-link id="text-router" to="/avaliacao">
@@ -44,16 +44,18 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+  <SidebarView/>
   <router-view />
 </template>
 
 
 <script>
 // import Sidebar from 'primevue/sidebar';
-import InputSwitch from 'primevue/inputswitch';
+// import InputSwitch from 'primevue/inputswitch';
 // import LoaderView from './views/LoaderView.vue';
 // import Button from 'primevue/button';
+import SidebarView from './components/SidebarView.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -84,11 +86,8 @@ export default defineComponent({
     }
   },
   components: {
-    // Sidebar,
-    InputSwitch,
-    // LoaderView
-    // Button
-  },
+    SidebarView
+},
 })
 
 

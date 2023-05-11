@@ -1,6 +1,7 @@
 <template>
     <div>
-        <span class="big-number" v-tooltip.right="'Quantidade de User Stories consultadas.'"> {{ total_us }}</span>
+        <span class="big-number" v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
+        <!-- https://primevue.org/configuration/ -->
         <div class="charts-dash">
             <div class="cards-chart">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
@@ -62,9 +63,9 @@ async function fetchSmells() {
 }
 
 const topThreeStories = computed(() => {
-  const totalStories = stories.value.length;
-  const startIndex = Math.max(totalStories - 3, 0);
-  return stories.value.slice(startIndex);
+    const totalStories = stories.value.length;
+    const startIndex = Math.max(totalStories - 3, 0);
+    return stories.value.slice(startIndex);
 });
 
 
