@@ -7,24 +7,24 @@
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
                 <div style="display: flexbox;">
-                    <Textarea v-model="prototype.input_us" class="user-text" placeholder="input user story" autoResize
+                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="input user story" autoResize
                         rows="25" cols="100" />
                 </div>
-                <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" /> -->
+                <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" /> -->
                 <div class="output-user">
                     <!-- <span>s</span> -->
                     <div>
-                        <Textarea v-model="prototype.pattern_suggestion" class="user-text" readonly
+                        <Textarea v-model="prototipoGpt.pattern_suggestion" class="user-text" readonly
                             placeholder="output user story" autoResize rows="12.5" cols="100" />
                     </div>
                     <!-- <span>s</span> -->
                     <div>
-                        <Textarea v-model="prototype.smells_id" class="user-text" readonly placeholder="Requirements smells"
+                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" readonly placeholder="Requirements smells"
                             autoResize rows="6" cols="100" />
                     </div>
                 </div>
             </div>
-            <my-button class="submit-story" label="Submit" @click="sendRequest(prototype.input_us)" />
+            <my-button :disabled="checkTextLength()" class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
 
 
         </div>
@@ -87,11 +87,12 @@ export default {
             loader: 'bars',
             modelAdd: false,
             modelUpdate: false,
-            prototype: {
+            prototipoGpt: {
                 input_us: '',
                 pattern_suggestion: null,
                 smells_id: null
             },
+            textLength: false,
         }
     },
     computed: {
@@ -112,13 +113,13 @@ export default {
             })
                 .then(response => {
                     console.log(response.data),
-                        this.prototype.pattern_suggestion = response.data.historia.trimStart(),
-                        console.log(this.prototype.pattern_suggestion)
-                    this.prototype.smells_id = this.removeSpaces(response.data.smell).trimStart(),
+                        this.prototipoGpt.pattern_suggestion = response.data.historia.trimStart(),
+                        console.log(this.prototipoGpt.pattern_suggestion)
+                    this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell).trimStart(),
                         this.isLoading = false
                     this.toastMessage(response.status)
 
-                    // this.getResponse(this.prototype.pattern_suggestion)
+                    // this.getResponse(this.prototipoGpt.pattern_suggestion)
 
                 })
                 .catch(error => {
@@ -131,17 +132,22 @@ export default {
         },
         toastMessage(item) {
             return item != 200
-            ? this.$toast.add({ severity: 'error',  detail: ' Não foi possivel estabelecer conexão com o servidor', life: 3000 })
-            : this.$toast.add({ severity: 'success', detail: ' Solicitação realizada com sucesso!!!', life: 3000 })
+                ? this.$toast.add({ severity: 'error', detail: ' Não foi possivel estabelecer conexão com o servidor', life: 3000 })
+                : this.$toast.add({ severity: 'success', detail: ' Solicitação realizada com sucesso!!!', life: 3000 })
 
         },
         removeSpaces(text) {
             let startIndex = text.indexOf('\n\n') + 2
             return text.slice(startIndex)
         },
+        checkTextLength() {
+            return this.prototipoGpt.input_us.value.length  >= 35
+            ? this.textLength = true
+            : this.textLength = false
+        },
         clear() {
-            this.prototype.input_us = ""
-            this.prototype.pattern_suggestion = null
+            this.prototipoGpt.input_us = ""
+            this.prototipoGpt.pattern_suggestion = null
         },
         extrair(prototipo) {
             const regex = /<div class="result">(.*?)<\/div>/s;
