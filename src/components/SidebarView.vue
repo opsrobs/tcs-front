@@ -1,51 +1,104 @@
 <template>
-    <div>
-        <div class="sidenav">
-            <div class="link-sidebar">
-                <router-link id="text-router" to="/avaliacao">
-                    <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
-                    <span>Nova Avaliação</span>
-                </router-link>
-            </div>
-            <div class="link-sidebar">
-                <router-link id="text-router" to="/DashboardView">
-                    <span class="pi pi-home" id="icon-router" v-tooltip.right="'Dashboard'"></span>
-                    <span>Dashboard</span>
-                </router-link>
-            </div>
-            <div class="link-sidebar">
-                <router-link id="text-router" to="/">
-                    <span class="pi pi-bell " id="icon-router" v-tooltip.right="'Notificações'"></span>
-                    <span>Notificações</span>
-                </router-link>
-            </div>
-            <div class="link-sidebar">
-                <router-link id="text-router" to="/">
-                    <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
-                    <span>Histórias de Usuario</span>
-                </router-link>
-            </div>
-            <div class="link-footer">
-                <div class="link-sidebar">
-                    <router-link id="text-router" to="/about">
-                        <span class="pi pi-sign-out" id="icon-router" v-tooltip.right="'About Me'"></span>
-                        <span>Sair</span>
-                    </router-link>
-                </div>
-                <div class="link-sidebar">
-                    <router-link id="text-router" to="/about">
-                        <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'"></span>
-                        <span>Modo Escuro
-                        </span>
-                        <!-- <InputSwitch class="switch-space" id="darkmode" v-model="checked" /> -->
-                    </router-link>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-<style>
+  <div>
+    <div class="sidenav">
+      <div class="link-sidebar">
+        <router-link id="text-router" to="/avaliacao">
+          <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
+          <span>Nova Avaliação</span>
+        </router-link>
+      </div>
+      <div class="link-sidebar">
+        <router-link id="text-router" to="/DashboardView">
+          <span class="pi pi-home" id="icon-router" v-tooltip.right="'Dashboard'"></span>
+          <span>Dashboard</span>
+        </router-link>
+      </div>
+      <div class="link-sidebar">
+        <router-link id="text-router" to="/">
+          <span class="pi pi-bell " id="icon-router" v-tooltip.right="'Notificações'"></span>
+          <span>Notificações</span>
+        </router-link>
+      </div>
+      <div class="link-sidebar">
+        <router-link id="text-router" to="/">
+          <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
+          <span>Histórias de Usuario</span>
+        </router-link>
+      </div>
+      <div class="link-footer">
+        <div class="link-sidebar">
+          <router-link id="text-router" to="/about" v-if="isLogged">
+            <span class="pi pi-sign-out" id="icon-router" @click="verifyLogin()"
+              v-tooltip.right="'Deslogar da conta'"></span>
+            <span>Sair</span>
+          </router-link>
+          <router-link id="text-router" to="/about" v-else>
+            <span class="pi pi-sign-in" id="icon-router" @click="verifyLogin()"  v-tooltip.right="'Logar'"></span>
+            <span>Entrar</span>
+          </router-link>
 
+        </div>
+        <div class="link-sidebar">
+          <router-link id="text-router" to="/about">
+            <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'"></span>
+            <span>Modo Escuro
+            </span>
+            <!-- <InputSwitch class="switch-space" id="darkmode" v-model="checked" /> -->
+          </router-link>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, onMounted } from "vue";
+
+export default {
+  name: 'SidebarView',
+  setup() {
+    const isLogged = ref(false);
+    const user = ref({
+      id: null,
+      name: '',
+      email: '',
+      password: '',
+      token: null
+    });
+
+    onMounted(() => {
+      verifyLogin();
+    });
+
+    function verifyLogin() {
+      // user.value.token = 'login';
+      if (user.value.token && !isEmpty(user.value.token.trim())) {
+        isLogged.value = true;
+        console.log("true" + user.value.token);
+      } else {
+        isLogged.value = false; //alterar o valor para false
+        console.log("false");
+      }
+    }
+
+    function isEmpty(value) {
+      return value === null || value === undefined || value.trim() === '';
+    }
+
+
+
+
+    return {
+      isLogged,
+      user,
+      verifyLogin
+    };
+  }
+};
+</script>
+
+
+<style>
 #darkmode {}
 
 .switch-space {
@@ -161,5 +214,5 @@ a:-webkit-any-link {
   color: black;
   cursor: pointer;
   text-decoration: none;
-} 
+}
 </style>

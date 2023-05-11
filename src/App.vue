@@ -1,52 +1,9 @@
 <template>
-  <!--<div>
-     <div class="container">
-      <div class="sidenav">
-        <div class="link-sidebar">
-          <router-link id="text-router" to="/avaliacao">
-            <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
-            <span>Nova Avaliação</span>
-          </router-link>
-        </div>
-        <div class="link-sidebar">
-          <router-link id="text-router" to="/DashboardView">
-            <span class="pi pi-home" id="icon-router" v-tooltip.right="'Dashboard'"></span>
-            <span>Dashboard</span>
-          </router-link>
-        </div>
-        <div class="link-sidebar">
-          <router-link id="text-router" to="/">
-            <span class="pi pi-bell " id="icon-router" v-tooltip.right="'Notificações'"></span>
-            <span>Notificações</span>
-          </router-link>
-        </div>
-        <div class="link-sidebar">
-          <router-link id="text-router" to="/">
-            <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
-            <span>Histórias de Usuario</span>
-          </router-link>
-        </div>
-        <div class="link-footer">
-          <div class="link-sidebar">
-            <router-link id="text-router" to="/about">
-              <span class="pi pi-sign-out" id="icon-router" v-tooltip.right="'About Me'"></span>
-              <span>Sair</span>
-            </router-link>
-          </div>
-          <div class="link-sidebar">
-            <router-link id="text-router" to="/about">
-              <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'"></span>
-              <span>Modo Escuro
-              </span>
-              <InputSwitch class="switch-space" id="darkmode" v-model="checked" />
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
+<div>
   <SidebarView/>
   <router-view />
+
+</div>
 </template>
 
 

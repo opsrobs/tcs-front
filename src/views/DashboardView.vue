@@ -1,6 +1,9 @@
 <template>
     <div>
-        <span class="big-number" v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
+        <div class="big-number"> 
+            <span class="desc-total-users">Total de user stories avaliadas  </span>
+            <span class="total_users"  v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
+        </div>
         <!-- https://primevue.org/configuration/ -->
         <div class="charts-dash">
             <div class="cards-chart">
@@ -18,8 +21,15 @@
                 </div>
                 <div class="top-users">
                     <span v-for="story in topThreeStories" :key="story.id">
-                        <div style="text-align: justify;">
-                            <span class="us_content" style="margin: 2px;">{{ story.historia_input }}</span>
+                        <div style="text-align: justify; border: 1px solid black;">
+                            <div class="input-request-us">
+                                <a style="font-style: oblique; color: black;">Solicitação de user story {{ story.id }}</a><br/>
+                                <span class="us_content">{{ story.historia_input }}</span><br />
+                            </div>
+                            <div class="output-request-us">
+                                <a style="font-style: oblique; color: black;">Formatação de user story </a><br/>
+                                <span class="us_content">{{ formatText(story.historia_output) }}</span>
+                            </div>
                         </div>
                     </span>
                 </div>
@@ -64,13 +74,19 @@ async function fetchSmells() {
 
 const topThreeStories = computed(() => {
     const totalStories = stories.value.length;
-    const startIndex = Math.max(totalStories - 3, 0);
+    const startIndex = Math.max(totalStories - 2, 0);
+    console.log(stories.value.slice(startIndex))
     return stories.value.slice(startIndex);
 });
 
+function formatText(text) {
+    let startIndex = text.indexOf('\n\n') + 2
+    return text.slice(startIndex)
+}
 
 async function fetchStories() {
     try {
+
         const response = await axios.get('http://127.0.0.1:5000/gethistorias');
         const responseData = response.data;
         stories.value = [];
@@ -81,13 +97,14 @@ async function fetchStories() {
                 historia_output: story.UserStoriePadronizada
             });
         }
-
+        console.log(response.data)
         total_us.value = Array.isArray(responseData) ? responseData.length : Object.keys(responseData).length;
     } catch (error) {
         isNotError.value = false;
         console.error('Erro ao buscar as histórias:', error);
     }
 }
+
 
 
 
@@ -155,6 +172,21 @@ function setChartOptions() {
 setChartOptions();
 </script>
 <style>
+.total_users{
+
+}
+.desc-total-users{
+    font-size: max(1.5rem, 24px);
+}
+.input-request-us {
+    color: red;
+}
+
+.output-request-us {
+    color: green;
+    margin-top: 3px;
+}
+
 .charts-dash {
     margin-left: 15%;
     width: calc(84% - 10px);

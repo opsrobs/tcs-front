@@ -1,5 +1,6 @@
 <template>
     <div style="position: relative;">
+        <Toast />
         <!-- <my-Loading class="loading" :active='isLoading' :is-full-page="fullPage" :loader='loader' /> -->
         <div class="avaliacao">
             <div class="grid-text-style">
@@ -35,12 +36,31 @@
 <script>
 import Textarea from 'primevue/textarea';
 import LoaderView from './LoaderView.vue';
+import Toast from 'primevue/toast';
+
 const axios = require('axios');
 
 // import Button from 'primevue/button';
 export default {
     data() {
         return {
+            items: [
+                {
+                    label: 'Editar',
+                    icon: 'pi pi-refresh',
+                    command: () => {
+                        this.editar(this.carro)
+                        this.$toast.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 });
+                    }
+                },
+                {
+                    label: 'Delete',
+                    icon: 'pi pi-times',
+                    command: () => {
+                        this.messageDialog(this.carro)
+                    }
+                }
+            ],
             tips: [
                 {
                     text: "Digite sua user story na caixa de texto indicada.",
@@ -96,12 +116,23 @@ export default {
                         console.log(this.prototype.pattern_suggestion)
                     this.prototype.smells_id = this.removeSpaces(response.data.smell).trimStart(),
                         this.isLoading = false
+                    this.toastMessage(response.status)
+
                     // this.getResponse(this.prototype.pattern_suggestion)
 
                 })
                 .catch(error => {
                     console.error(error);
+                    this.toastMessage(error.code),
+                        this.isLoading = false
+
                 });
+
+        },
+        toastMessage(item) {
+            return item != 200
+            ? this.$toast.add({ severity: 'error',  detail: ' Não foi possivel estabelecer conexão com o servidor', life: 3000 })
+            : this.$toast.add({ severity: 'success', detail: ' Solicitação realizada com sucesso!!!', life: 3000 })
 
         },
         removeSpaces(text) {
@@ -146,7 +177,8 @@ export default {
     },
     components: {
         Textarea,
-        LoaderView
+        LoaderView,
+        Toast
     }
 }
 
