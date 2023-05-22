@@ -4,7 +4,6 @@
             <span class="desc-total-users">Total de user stories avaliadas  </span>
             <span class="total_users"  v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
         </div>
-        <!-- https://primevue.org/configuration/ -->
         <div class="charts-dash">
             <div class="cards-chart">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
@@ -15,6 +14,7 @@
                         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
                     </div>
                     <div v-else>
+                        <Message severity="error" :closable="false"> {{ error_content }}</Message>
                         <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300"
                             height="300" />
                     </div>
@@ -41,9 +41,10 @@
 </template>
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import LoaderView from './LoaderView.vue';
+import LoaderView from '../components/LoaderView.vue';
 import Chart from 'primevue/chart';
 const axios = require('axios');
+import Message from 'primevue/message';
 
 onMounted(() => {
     fetchSmells();
@@ -52,11 +53,12 @@ onMounted(() => {
 
 const isLoading = ref(true);
 const isNotError = ref(true);
-const total_us = ref();
+const total_us = ref(0);
 const chartData = ref();
 const chartOptions = ref();
 const smellsList = ref([]);
 let stories = ref([]);
+let error_content = ref();
 
 
 async function fetchSmells() {
@@ -69,6 +71,7 @@ async function fetchSmells() {
         isNotError.value = false;
         isLoading.value = false;
         console.error('Erro ao buscar os smells:', error);
+        error_content.value = '\nErro ao buscar os smells: ' + error.message;
     }
 }
 
@@ -172,9 +175,6 @@ function setChartOptions() {
 setChartOptions();
 </script>
 <style>
-.total_users{
-
-}
 .desc-total-users{
     font-size: max(1.5rem, 24px);
 }

@@ -1,5 +1,6 @@
 <template>
 <div>
+  <CreateAccount/>
   <SidebarView/>
   <router-view />
 
@@ -13,6 +14,7 @@
 // import LoaderView from './views/LoaderView.vue';
 // import Button from 'primevue/button';
 import SidebarView from './components/SidebarView.vue';
+import CreateAccount from './components/CreateAccount.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -43,7 +45,8 @@ export default defineComponent({
     }
   },
   components: {
-    SidebarView
+    SidebarView,
+    CreateAccount
 },
 })
 
@@ -62,8 +65,6 @@ export default defineComponent({
 :root {
   --bg-off: white;
 }
-
-#darkmode {}
 
 .switch-space {
   margin-left: 2vh;

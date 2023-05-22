@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <my-button :disabled="checkTextLength()" class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
+            <my-button  class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
 
 
         </div>
@@ -35,7 +35,7 @@
   
 <script>
 import Textarea from 'primevue/textarea';
-import LoaderView from './LoaderView.vue';
+import LoaderView from '../components/LoaderView.vue';
 import Toast from 'primevue/toast';
 
 const axios = require('axios');
@@ -44,23 +44,6 @@ const axios = require('axios');
 export default {
     data() {
         return {
-            items: [
-                {
-                    label: 'Editar',
-                    icon: 'pi pi-refresh',
-                    command: () => {
-                        this.editar(this.carro)
-                        this.$toast.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 });
-                    }
-                },
-                {
-                    label: 'Delete',
-                    icon: 'pi pi-times',
-                    command: () => {
-                        this.messageDialog(this.carro)
-                    }
-                }
-            ],
             tips: [
                 {
                     text: "Digite sua user story na caixa de texto indicada.",

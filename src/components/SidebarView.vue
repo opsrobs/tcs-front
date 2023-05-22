@@ -27,13 +27,13 @@
       </div>
       <div class="link-footer">
         <div class="link-sidebar">
-          <router-link id="text-router" to="/about" v-if="isLogged">
+          <router-link id="text-router" to="/Account" v-if="isLogged">
             <span class="pi pi-sign-out" id="icon-router" @click="verifyLogin()"
               v-tooltip.right="'Deslogar da conta'"></span>
             <span>Sair</span>
           </router-link>
-          <router-link id="text-router" to="/about" v-else>
-            <span class="pi pi-sign-in" id="icon-router" @click="verifyLogin()"  v-tooltip.right="'Logar'"></span>
+          <router-link id="text-router" to="/Account" v-else>
+            <span class="pi pi-sign-in" id="icon-router" @click="verifyLogin()" v-tooltip.right="'Logar'"></span>
             <span>Entrar</span>
           </router-link>
 
