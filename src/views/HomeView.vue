@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="soon">
+    <img alt="Vue logo" src="https://e-gerbo.com.br/wp-content/uploads/2019/11/EM-BREVE.png">
+    <HelloWorld msg=" "/>
   </div>
 </template>
 
@@ -16,3 +16,14 @@ export default {
   }
 }
 </script>
+<style>
+.soon {
+    margin-left: 15%;
+    width: calc(84% - 10px);
+    justify-content: center;
+    position: relative;
+    bottom: 0;
+    display: inline-block;
+    max-width: 100%;
+}
+</style>

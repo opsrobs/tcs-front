@@ -228,10 +228,15 @@ export default {
     position: absolute;
 }
 
+::placeholder{
+    color: rgb(0, 0, 0);
+}
+
 .user-text {
     margin-right: 1vh;
     border: 2px solid;
     border-radius: 5px;
+    color:black;
     transition: border-color 0.3s ease-out;
     width: max(95%, 15vh) !important;
     /* height: calc(15vh - 4px) !important; */
@@ -263,7 +268,8 @@ export default {
 
     .submit-story {
         position: relative;
-        bottom: 20%;
+        bottom: 1%;
+        top:-120px;
     }
 
 }

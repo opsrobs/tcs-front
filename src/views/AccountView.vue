@@ -271,11 +271,11 @@ form {
 }
 
 form * {
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif;
     color: #d4a373;
     letter-spacing: 0.5px;
     outline: none;
-    border: none;
+    border: none; */
 }
 
 form h3 {
@@ -325,7 +325,7 @@ input {
     border-radius: 3px;
     padding: 5px 10px 10px 5px;
     background-color: rgba(255, 255, 255, 0.47);
-    color: #d4a373;
+    /* color: #d4a373; */
     text-align: center;
 }
 
