@@ -44,7 +44,6 @@
 // import firebaseConfig from '../../firebaseConfig';
 // import userChart from './../states/chartstate'
 import axios from 'axios';
-import storage from '../states/userStates';
 export default {
     data() {
         return {
@@ -55,7 +54,6 @@ export default {
                 nome: '',
                 senha: ''
             },
-            storage,
             isVisible: true,
             //=====================
 
