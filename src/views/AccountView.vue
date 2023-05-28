@@ -1,50 +1,38 @@
 <template>
-    <div>
+    <div style="background-color: aqua;">
 
         <body>
             <div class="background">
                 <div class="shape"></div>
                 <div class="shape"></div>
             </div>
-            <form @submit.prevent="login()">
+            <form @submit.prevent="sendRequestCadastro()">
                 <h3 v-if="isVisible">{{ checkTittle() }}</h3>
 
                 <label class="signup" v-if="!isVisible">Nome</label>
-                <input class="signup" v-if="!isVisible" type="text" v-model="user.nome" required placeholder="Nome"
+                <input class="signup" v-if="!isVisible" type="text" v-model="usuario.nome" required placeholder="Nome"
                     id="nome">
 
-                <label v-if="!isVisible">CPF</label>
-                <input v-if="!isVisible" type="text" name="ao_cpf" maxlength="11" v-model="user.cpf_cnpj" required
-                    placeholder="000.000.000-00" id="cpf">
 
-                <label v-if="!isVisible">Data de nascimento</label>
-                <input v-if="!isVisible" type="text" v-model="user.data_nasc" required placeholder="dd/mm/aaaa"
-                    id="data_nasc">
+                <label for="username">Email</label>
+                <input type="text" v-model="usuario.email" required placeholder="Email" id="username">
 
-
-                <label for="username">Username</label>
-                <input type="text" v-model="user.userName" required placeholder="Email or User" id="username">
-
-                <label for="password">Password</label>
-                <input type="password" v-model="user.password" required placeholder="Password" id="password">
-                <label v-if="!isVisible" for="password">Confirm password</label>
-                <input v-if="!isVisible" type="password" v-model="new_pass" required placeholder="Confirm password"
-                    id="password">
+                <label for="password">Senha</label>
+                <input type="password" v-model="usuario.senha" required placeholder="Senha" id="password">
+                <label v-if="!isVisible" for="password">Confirme a senha</label>
+                <input v-if="!isVisible" type="password" v-model="new_pass" required placeholder="Senha" id="password">
                 <span class="review-password" v-if="!isValid">As senhas não conferem</span>
 
-                <input v-show="isVisible" class="login-submit" type="submit" value="Login">
-                <span class="create-account">Not a User?</span>
-                <br /><a class="link-create-account" @click="createAccount()" href="#">Create Account!</a>
+                <button v-show="isVisible" class="login-submit">Login</button>
 
-                <input @click="new_user()" v-if="!isVisible" class="create-account" type="submit" value="Create">
-                <div class="social">
-                    <div v-show="isVisible" @click="handleLogingGoogle" class="go"><i class="fab fa-google"></i> Google
-                    </div>
-                    <div v-show="isVisible" @click="handleLogingGitHub" class="fb"><i class="fab fa-github"></i> Github
-                    </div>
-                    <div v-show="isVisible" @click="handleLogingTwitter" class="fb"><i class="fab fa-twitter"></i>
-                        Twitter</div>
-                </div>
+                <span v-if="isVisible" class="create-account">Não possui conta?</span>
+                <br /><a v-if="isVisible" class="link-create-account" @click="createAccount()" href="#">Crie sua conta!</a>
+                <span v-if="!isVisible" class="create-account">Já possui conta?</span>
+                <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
+                    conta!</a><br />
+
+                <button @click="sendRequestCadastro()" v-if="!isVisible" class="create-account-button">Registrar</button>
+
             </form>
         </body>
 
@@ -70,143 +58,81 @@ export default {
         return {
             new_pass: '',
             isValid: true,
-            user: {
+            usuario: {
+                email: '',
                 nome: '',
-                cpf_cnpj: '',
-                data_nasc: '',
-                userName: '',
-                password: '',
-                roles: [
-                    {
-                        roleId: 1,
-                        roleName: "ROLE_USER"
-                    }
-                ]
+                senha: ''
             },
             isVisible: true,
             //=====================
 
         }
     }, methods: {
-
-        // handleLogingGoogle() {
-        //     signInWithPopup(auth, provider)
-        //         .then((result) => {
-        //             //const user = result.user;
-
-        //             console.log(result._tokenResponse)
-
-        //             this.user.nome = result._tokenResponse.displayName
-        //             // this.user.last_name = result._tokenResponse.lastName
-        //             this.user.userName = result._tokenResponse.email
-        //             // verificar se há ou não username. 
-        //             // Caso não haja, criar método para validar qual campo deve ser apresentado
-
-        //             //this.user = result.user.displayName;
-        //             this.isVisible = false
-        //         }).catch((error) => {
-        //             console.log(error)
-        //         });
-        // },
-        validadePassword() {
-            if (this.user.password === this.new_pass && this.new_pass.length === 0) {
-                return this.isValid
-            } else if (this.user.password != this.new_pass) {
-                return this.isValid = false
-            } else
-                return this.isValid = true
-        },
-        // async login() {
-        //     console.log(this.user.userName + '  ' + this.user.password)
-        //     axios.get('http://localhost:8080/e-commerce/',
-        //         {
-        //             auth: {
-        //                 username: this.user.userName,
-        //                 password: this.user.password
-        //             },
-        //         })
-        //         .then(resp => {
-        //             console.log(resp.data)
-        //             userChart.contentPerson.pessoa.userName = this.user.userName
-        //             userChart.contentPerson.pessoa.userID= resp.data.userID
-        //             userChart.pwd = this.user.password
-        //             this.mountUser(this.user.userName)
-        //             console.log(userChart.pwd)
-        //             this.$router.push('/bolo')
-
-        //             // console.log(this.user.userName)
-        //         }).catch((error => console.log(error)))
-        //         console.log('<>')
-        // },
-        // mountUser(userName) {
-        //     console.log(userChart.contentPerson.pessoa.userName)
-        //      axios.get(`http://localhost:8080/e-commerce/user/${userName}`,
-        //         {
-        //             auth: {
-        //                 username: userChart.contentPerson.pessoa.userName,
-        //                 password: userChart.pwd
-        //             },
-        //         })
-        //         .then(resp => {
-        //             userChart.contentPerson.pessoa = resp.data
-        //             console.log(userChart.contentPerson.pessoa)
-        //         }).catch(resp => console.log(resp))
-        // },
         createAccount() {
-            this.isVisible = false
+            this.usuario.email = '',
+                this.usuario.nome = '',
+                this.usuario.senha = ''
+
+            console.log(this.isVisible)
+            return this.isVisible == true
+                ? this.isVisible = false
+                : this.isVisible = true
         },
-        new_user() {
-            console.log(this.user)
-            if (this.isValid) {
-                axios.post('http://localhost:8080/e-commerce/new-user',
-                    this.user)
-                    .then(resp => {
-                        this.$router.push('/login')
-                        console.log(resp.data)
-                    }).catch(resp => alert(resp.body))
-            }
+        sendRequestCadastro() {
+            this.isLoading = true
+            const formData = new FormData();
+            formData.append('nome', this.usuario.nome);
+            formData.append('email', this.usuario.email);
+            formData.append('senha', this.usuario.senha);
+            //   formData.append('campo2', 'valor2');
+            console.log(Array.from(formData.entries()));
+
+            axios({
+                url: 'http://127.0.0.1:5000/register',
+                method: 'POST',
+                data: formData
+            })
+                .then(response => {
+                    console.log(response.data),
+                    this.$router.push('/DashboardView')
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.$router.push('/DashboardView'),
+                    this.toastMessage(error.code),
+                        this.isLoading = false
+
+                });
+
         },
-        // handleSignOut() {
-        //     const auth = getAuth();
-        //     signOut(auth).then(() => {
-        //         this.user = ''
-        //         this.isSignedIn = false
-        //     }).catch((error) => {
-        //         console.log(error)
-        //     });
+        sendRequestLogin() {
+            this.isLoading = true
+            const formData = new FormData();
+            formData.append('email', this.usuario.email);
+            formData.append('senha', this.usuario.senha);
+            //   formData.append('campo2', 'valor2');
+            console.log(Array.from(formData.entries()));
 
-        // },
-        // handleLogingTwitter() {
-        //     signInWithPopup(auth, providerTwitter)
-        //         .then((result) => {
-        //             //const user = result.user;
+            axios({
+                url: 'http://127.0.0.1:5000/register',
+                method: 'POST',
+                data: formData
+            })
+                .then(response => {
+                    console.log(response.data),
+                    this.$router.push('/DashboardView')
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.$router.push('/DashboardView'),
+                    this.toastMessage(error.code),
+                        this.isLoading = false
 
-        //             this.user.first_name = result._tokenResponse.fullName
-        //             // this.user.last_name = result._tokenResponse.lastName
-        //             this.user.username = result._tokenResponse.screenName
-        //             console.log(result)
-        //             console.log(result._tokenResponse)
-        //             this.user.nome = result.user.displayName;
-        //             this.isVisible = false
-        //         }).catch((error) => {
-        //             console.log(error)
-        //         });
-        // },
-        // handleLogingGitHub() {
-        //     signInWithPopup(auth, providerGithub)
-        //         .then((result) => {
-        //             //const user = result.user;
-        //             console.log(result)
-        //             console.log(result._tokenResponse)
+                });
 
-        //             this.user = result.user.displayName;
-        //             this.isVisible = false
-        //         }).catch((error) => {
-        //             console.log(error)
-        //         });
-        // },
+        },
         checkTittle() {
-            return this.isVisible ? 'Login Here' : 'Create account'
+            return this.isVisible ? 'Acesse a Plataforma' : 'Criar nova conta'
         }
     },
     components: {
@@ -222,10 +148,15 @@ export default {
     box-sizing: border-box;
 }
 
+body {
+    background-color: #fefefe;
+}
 
+.create-account-button,
 .login-submit,
 input[type="button"],
 input[type="submit"] {
+    position: relative;
     display: block;
     margin-top: 12px;
     margin-left: auto;
@@ -234,48 +165,82 @@ input[type="submit"] {
     font-weight: bold;
     font-family: sans-serif;
     border-radius: 25px;
-    width: 45%
+    width: 45%;
+    z-index: 1;
+
+    width: 90px;
+    height: 40px;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.create-account-button:before,
+.login-submit:before,
+input[type="button"]:before,
+input[type="submit"]:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -2px;
+    /* this creates the border effect */
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgb(247, 67, 157), rgb(134, 62, 175));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.create-account-button:hover:before,
+.login-submit:hover:before,
+input[type="button"]:hover:before,
+input[type="submit"]:hover:before {
+    opacity: 1;
 }
 
 
 
-
-
-/* .shape:first-child {
-    background: linear-gradient(#d4a373,
-            #d4a373);
-    left: -30px;
-    top: 500px;
-} */
-
-/* .shape:last-child {
-    background: linear-gradient(to right,
-            #d4a373,
-            #d4a373);
-    right: -30px;
-    bottom: -80px;
-} */
-
-form {
+*/ .background {
+    width: 430px;
     height: auto;
-    width: 400px;
     position: absolute;
     transform: translate(-50%, -50%);
-    top: 55%;
+    left: 50%;
+    top: 50%;
+}
+
+.background .shape {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    border-radius: 50%;
+}
+
+
+form {
+    margin-left: 10%;
+    height: auto;
+    width: 400px;
+    background-color: #e7e2eb;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
     left: 50%;
     border-radius: 10px;
     backdrop-filter: blur(10px);
-    border: 2px solid #e9edc9;
-    box-shadow: 0 0 40px #d4a373;
+    border: 2px solid #eb9ed0;
+    box-shadow: 0 0 40px #cd98b4;
     padding: 50px 35px;
 }
 
 form * {
-    /* font-family: 'Poppins', sans-serif;
-    color: #d4a373;
+    font-family: 'Poppins', sans-serif;
+    color: #462f46;
     letter-spacing: 0.5px;
     outline: none;
-    border: none; */
+    border: none;
 }
 
 form h3 {
@@ -303,6 +268,12 @@ input {
     font-size: 14px;
     font-weight: 300;
 
+    transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 5px 5px 0px 0px rgb(210, 136, 205);
 }
 
 /* .signup{
@@ -325,22 +296,11 @@ input {
     border-radius: 3px;
     padding: 5px 10px 10px 5px;
     background-color: rgba(255, 255, 255, 0.47);
-    /* color: #d4a373; */
+    color: #d4a373;
     text-align: center;
 }
 
-.social div:hover {
-    background-color: rgba(255, 255, 255, 0.47);
-    border-radius: 10%
-}
 
-.social .fb {
-    margin-left: 25px;
-}
-
-.social i {
-    margin-right: 4px;
-}
 
 .review-password {
     display: flex;
@@ -363,25 +323,13 @@ input {
     font-size: 12px;
 }
 
-@keyframes view {
-    0% {
-        margin-left: 0;
-    }
-
-    25% {
-        margin-left: 7px;
-    }
-
-    50% {
-        margin-left: 0;
-    }
-
-    75% {
-        margin-left: -7px;
-    }
-
-    100% {
-        margin-left: 0;
+@media screen and (max-height: 750px) {
+    form {
+        height: 530px;
+        width: 300px;
+        top: 50%;
+        left: 50%;
+        padding: 20px 30px;
     }
 }
 </style>

@@ -7,20 +7,20 @@
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
                 <div style="display: flexbox;">
-                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="input user story" autoResize
+                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story" autoResize
                         rows="25" cols="100" />
                 </div>
                 <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" /> -->
                 <div class="output-user">
                     <!-- <span>s</span> -->
-                    <div>
-                        <Textarea v-model="prototipoGpt.pattern_suggestion" class="user-text" readonly
-                            placeholder="output user story" autoResize rows="12.5" cols="100" />
+                    <div class="txt">
+                        <Textarea v-model="prototipoGpt.pattern_suggestion" class="user-text" disabled
+                            placeholder="User Story Padronizada" autoResize  cols="100" />
                     </div>
                     <!-- <span>s</span> -->
-                    <div>
-                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" readonly placeholder="Requirements smells"
-                            autoResize rows="6" cols="100" />
+                    <div style="background-color: antiquewhite;" class="txt">
+                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled placeholder="Requirements smells Identificados"
+                            autoResize  cols="100" />
                     </div>
                 </div>
             </div>
@@ -174,6 +174,10 @@ export default {
 </script>
   
 <style>
+.txt{
+    height: 240px;
+    bottom: 0px !important;
+}
 /* .submit-story { 
     float: right; 
     margin-right: 25vw; 
@@ -229,7 +233,7 @@ export default {
 }
 
 ::placeholder{
-    color: rgb(0, 0, 0);
+    color: rgb(36, 32, 32);
 }
 
 .user-text {
