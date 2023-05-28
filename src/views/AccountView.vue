@@ -31,7 +31,7 @@
                 <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
                     conta!</a><br />
 
-                <button @click="sendRequestCadastro()" v-if="!isVisible" class="create-account-button">Registrar</button>
+                <button @click="sendRequestSignUp()" v-if="!isVisible" class="create-account-button">Registrar</button>
 
             </form>
         </body>
@@ -87,33 +87,7 @@ export default {
                 ? this.isVisible = false
                 : this.isVisible = true
         },
-        sendRequestCadastro() {
-            this.isLoading = true
-            const formData = new FormData();
-            formData.append('nome', this.usuario.nome);
-            formData.append('email', this.usuario.email);
-            formData.append('senha', this.usuario.senha);
-            //   formData.append('campo2', 'valor2');
-            console.log(Array.from(formData.entries()));
 
-            axios({
-                url: 'http://127.0.0.1:5000/register',
-                method: 'POST',
-                data: formData
-            })
-                .then(response => {
-                    console.log(response.data),
-                        this.$router.push('/DashboardView')
-                })
-                .catch(error => {
-                    console.error(error);
-                    this.$router.push('/DashboardView'),
-                        this.toastMessage(error.code),
-                        this.isLoading = false
-
-                });
-
-        },
         getUsernameFromEmail(email) {
             const parts = email.split('@');
             if (parts.length > 0) {
@@ -122,32 +96,59 @@ export default {
                 return null;
             }
         },
-        sendRequestLogin() {
+        async sendRequestSignUp() {
             this.isLoading = true
+            const formData = new FormData();
+            formData.append('nome', this.usuario.nome);
+            formData.append('email', this.usuario.email);
+            formData.append('senha', this.usuario.senha);
+
+            console.log(Array.from(formData.entries()));
+
+            try {
+                const response = await axios({
+                    url: 'http://127.0.0.1:5000/register',
+                    method: 'POST',
+                    data: formData
+                });
+                console.log(response.data);
+                this.sendRequestLogin()
+            } catch (error) {
+                console.error(error);
+                this.$router.push('/DashboardView');
+                this.toastMessage(error.code);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async sendRequestLogin() {
+            this.isLoading = true;
             const username = this.usuario.email;
             const password = this.usuario.senha;
 
             // Codificar credenciais em base64
-            const token = btoa(username + ":" + password)
+            const token = btoa(username + ":" + password);
 
-            axios({
-                url: 'http://127.0.0.1:5000/auth',
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Basic ' + token
-                }
-            })
-                .then(response => {
-                    console.log(response.data.token);
-                    this.setUserData(response.data.token);
-                    this.$router.push('/DashboardView');
-                })
-                .catch(error => {
-                    console.error(error);
-                    this.toastMessage("An error occurred during login.");
-                    this.$router.push('/DashboardView');
-                    this.isLoading = false;
+            try {
+                const response = await axios({
+                    url: 'http://127.0.0.1:5000/auth',
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + token
+                    }
                 });
+
+                console.log(response.data.token);
+                this.setUserData(response.data.token);
+                this.$router.push('/DashboardView');
+            } catch (error) {
+                console.error(error);
+                this.toastMessage("An error occurred during login.");
+                this.$router.push('/DashboardView');
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         checkTittle() {
