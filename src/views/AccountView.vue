@@ -6,7 +6,7 @@
                 <div class="shape"></div>
                 <div class="shape"></div>
             </div>
-            <form @submit.prevent="sendRequestCadastro()">
+            <form @submit.prevent="sendRequestLogin()">
                 <h3 v-if="isVisible">{{ checkTittle() }}</h3>
 
                 <label class="signup" v-if="!isVisible">Nome</label>
@@ -44,15 +44,7 @@
 // import firebaseConfig from '../../firebaseConfig';
 // import userChart from './../states/chartstate'
 import axios from 'axios';
-// import { getAuth, signOut, signInWithPopup, GoogleAuthProvider, TwitterAuthProvider, GithubAuthProvider } from "firebase/auth";
-
-// firebaseConfig
-
-// const provider = new GoogleAuthProvider();
-// const providerTwitter = new TwitterAuthProvider();
-// const providerGithub = new GithubAuthProvider();
-// const auth = getAuth();
-
+import storage from '../states/userStates';
 export default {
     data() {
         return {
@@ -63,11 +55,30 @@ export default {
                 nome: '',
                 senha: ''
             },
+            storage,
             isVisible: true,
             //=====================
 
         }
     }, methods: {
+        setUserData(token) {
+            // Primeiro, vamos decodificar o token para extrair o payload.
+            // JWTs são de formato 'header.payload.signature'. Queremos o payload.
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(window.atob(base64));
+
+            // Agora que temos o payload, podemos extrair o nome do usuário e a data de expiração.
+            const username = payload.username;
+            const expiration = payload.exp;
+
+            // Finalmente, vamos armazenar essas informações no LocalStorage.
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
+            localStorage.setItem('expiration', expiration);
+            localStorage.setItem('nome', this.getUsernameFromEmail(username));
+        },
         createAccount() {
             this.usuario.email = '',
                 this.usuario.nome = '',
@@ -94,44 +105,55 @@ export default {
             })
                 .then(response => {
                     console.log(response.data),
-                    this.$router.push('/DashboardView')
+                        this.$router.push('/DashboardView')
                 })
                 .catch(error => {
                     console.error(error);
                     this.$router.push('/DashboardView'),
-                    this.toastMessage(error.code),
+                        this.toastMessage(error.code),
                         this.isLoading = false
 
                 });
 
+        },
+        getUsernameFromEmail(email) {
+            const parts = email.split('@');
+            if (parts.length > 0) {
+                return parts[0];
+            } else {
+                return null;
+            }
         },
         sendRequestLogin() {
             this.isLoading = true
-            const formData = new FormData();
-            formData.append('email', this.usuario.email);
-            formData.append('senha', this.usuario.senha);
-            //   formData.append('campo2', 'valor2');
-            console.log(Array.from(formData.entries()));
+            const username = this.usuario.email;
+            const password = this.usuario.senha;
+
+            // Codificar credenciais em base64
+            const token = btoa(username + ":" + password)
 
             axios({
-                url: 'http://127.0.0.1:5000/register',
+                url: 'http://127.0.0.1:5000/auth',
                 method: 'POST',
-                data: formData
+                headers: {
+                    'Authorization': 'Basic ' + token
+                }
             })
                 .then(response => {
-                    console.log(response.data),
-                    this.$router.push('/DashboardView')
+                    console.log(response.data.token);
+                    this.setUserData(response.data.token);
+                    this.$router.push('/DashboardView');
                 })
                 .catch(error => {
                     console.error(error);
-                    this.$router.push('/DashboardView'),
-                    this.toastMessage(error.code),
-                        this.isLoading = false
-
+                    this.toastMessage("An error occurred during login.");
+                    this.$router.push('/DashboardView');
+                    this.isLoading = false;
                 });
-
         },
+
         checkTittle() {
+            console.log(this.isVisible)
             return this.isVisible ? 'Acesse a Plataforma' : 'Criar nova conta'
         }
     },
