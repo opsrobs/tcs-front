@@ -2,6 +2,11 @@
   <div>
     <div class="sidenav">
       <div class="link-sidebar">
+        <div class="hello-login" v-if="isLogged">
+          <row>Olá, </row><br/>
+          <span class="hello-name">{{ nome }}</span>
+
+        </div>
         <router-link id="text-router" to="/avaliacao">
           <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
           <span>Nova Avaliação</span>
@@ -57,49 +62,61 @@ import { ref, onMounted } from "vue";
 export default {
   name: 'SidebarView',
   setup() {
-    const isLogged = ref(false);
-    const user = ref({
-      id: null,
-      name: '',
-      email: '',
-      password: '',
-      token: null
-    });
+    const isLogged = ref(true);
+    const token = ref();
+    const username = ref();
+    const nome = ref('');
+    const expiration = ref();
 
     onMounted(() => {
-      verifyLogin();
+      getUserData();
     });
 
-    function verifyLogin() {
-      // user.value.token = 'login';
-      if (user.value.token && !isEmpty(user.value.token.trim())) {
-        isLogged.value = true;
-        console.log("true" + user.value.token);
-      } else {
-        isLogged.value = false; //alterar o valor para false
-        console.log("false");
+    function getUserData() {
+      // Recuperando os dados do LocalStorage
+      token.value = localStorage.getItem('token');
+      username.value = localStorage.getItem('username');
+      nome.value = localStorage.getItem('nome');
+      expiration.value = localStorage.getItem('expiration');
+      console.log(nome);
+      // Se algum valor não for encontrado, é melhor devolver um objeto vazio ou nulo
+      if (!token.value || !username.value || !expiration.value) {
+        isLogged.value = false;
+        return null;
       }
+
+      // Transformando a data de expiração de volta em um objeto Date
+      const expirationDate = new Date(Number(expiration) * 1000);
+
+      // Devolvendo um objeto contendo os dados do usuário
+      return {
+        token,
+        username,
+        nome,
+        expiration: expirationDate
+      };
     }
-
-    function isEmpty(value) {
-      return value === null || value === undefined || value.trim() === '';
-    }
-
-
-
-
     return {
       isLogged,
-      user,
-      verifyLogin
+      token,
+      username,
+      nome,
     };
   }
 };
+
 </script>
 
 
 <style>
 
+.hello-login{
+  margin-left: 15px; 
+}
+.hello-name{
+  margin-left: 10px;
+  font-style: italic;
+}
 .switch-space {
   margin-left: 2vh;
 }
