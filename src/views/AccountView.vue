@@ -1,6 +1,6 @@
 <template>
     <div style="background-color: aqua;">
-
+        <SidebarView :isVisible="showSidebar" />
         <body>
             <div class="background">
                 <div class="shape"></div>
@@ -43,6 +43,7 @@
 <script>
 // import firebaseConfig from '../../firebaseConfig';
 // import userChart from './../states/chartstate'
+import SidebarView from '@/components/SidebarView.vue';
 import axios from 'axios';
 export default {
     data() {
@@ -54,6 +55,7 @@ export default {
                 nome: '',
                 senha: ''
             },
+            showSidebar:false,
             isVisible: true,
             //=====================
 
@@ -141,6 +143,7 @@ export default {
 
                 console.log(response.data.token);
                 this.setUserData(response.data.token);
+                this.showSidebar = true;
                 this.$router.push('/DashboardView');
             } catch (error) {
                 console.error(error);
@@ -157,6 +160,7 @@ export default {
         }
     },
     components: {
+        SidebarView
     }
 }
 </script>

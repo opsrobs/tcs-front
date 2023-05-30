@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-if="isVisible">
     <div class="sidenav">
       <div class="link-sidebar">
         <div class="hello-login" v-if="isLogged">
-          <row>Olá, </row><br/>
+          <row>Olá, </row><br />
           <span class="hello-name">{{ nome }}</span>
 
         </div>
@@ -32,13 +32,12 @@
       </div>
       <div class="link-footer">
         <div class="link-sidebar">
-          <router-link id="text-router" to="/Account" v-if="isLogged">
-            <span class="pi pi-sign-out" id="icon-router" @click="verifyLogin()"
-              v-tooltip.right="'Deslogar da conta'"></span>
+          <router-link id="text-router" to="/Account" @click="verifyLogin()" v-if="isLogged">
+            <span class="pi pi-sign-out" id="icon-router" v-tooltip.right="'Deslogar da conta'"></span>
             <span>Sair</span>
           </router-link>
-          <router-link id="text-router" to="/Account" v-else>
-            <span class="pi pi-sign-in" id="icon-router" @click="verifyLogin()" v-tooltip.right="'Logar'"></span>
+          <router-link id="text-router" @click="verifyLogin()" to="/Account" v-else>
+            <span class="pi pi-sign-in" id="icon-router" v-tooltip.right="'Logar'"></span>
             <span>Entrar</span>
           </router-link>
 
@@ -59,10 +58,17 @@
 <script>
 import { ref, onMounted } from "vue";
 
+
 export default {
   name: 'SidebarView',
+  props: {
+    isVisible: {
+      type: Boolean,
+      default: true
+    }
+  },
   setup() {
-    const isLogged = ref(true);
+    const isLogged = ref(false);
     const token = ref();
     const username = ref();
     const nome = ref('');
@@ -70,20 +76,35 @@ export default {
 
     onMounted(() => {
       getUserData();
+      // verifyLogin()
     });
 
+    function verifyLogin() {
+
+      if (isLogged.value) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('nome');
+        localStorage.removeItem('expiration');
+        console.log(nome);
+        isLogged.value = false;
+        console.log(isLogged.value + "<--------")
+      }
+    }
+
+
     function getUserData() {
-      // Recuperando os dados do LocalStorage
       token.value = localStorage.getItem('token');
       username.value = localStorage.getItem('username');
       nome.value = localStorage.getItem('nome');
       expiration.value = localStorage.getItem('expiration');
-      console.log(nome);
       // Se algum valor não for encontrado, é melhor devolver um objeto vazio ou nulo
       if (!token.value || !username.value || !expiration.value) {
-        isLogged.value = false;
+        verifyLogin()
         return null;
       }
+      isLogged.value = true;
+
 
       // Transformando a data de expiração de volta em um objeto Date
       const expirationDate = new Date(Number(expiration) * 1000);
@@ -101,6 +122,7 @@ export default {
       token,
       username,
       nome,
+      verifyLogin,
     };
   }
 };
@@ -109,14 +131,15 @@ export default {
 
 
 <style>
-
-.hello-login{
-  margin-left: 15px; 
+.hello-login {
+  margin-left: 15px;
 }
-.hello-name{
+
+.hello-name {
   margin-left: 10px;
   font-style: italic;
 }
+
 .switch-space {
   margin-left: 2vh;
 }

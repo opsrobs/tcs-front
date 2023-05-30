@@ -11,6 +11,8 @@ import Button from "primevue/button";
 import Loading from 'vue-loading-overlay';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
+
 import { useToast } from "primevue/usetoast";
 
 
@@ -19,6 +21,7 @@ app.directive('tooltip', Tooltip);
 app.component('my-button', Button);
 app.component('loading-overlay', Loading);
 app.use(ToastService)
+app.use(ConfirmationService);
 app.use(router)
 app.use(PrimeVue)
 app.component('my-Toast', Toast);
@@ -29,6 +32,7 @@ export default defineComponent({
     setup() {
         const toast = useToast();
         toast.add({severity:'info', summary: 'Info Message', detail:'Message Content', life: 3000});
+        
     }
 })
 
