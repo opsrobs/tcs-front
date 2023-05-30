@@ -18,12 +18,6 @@
           <span>Dashboard</span>
         </router-link>
       </div>
-      <!-- <div class="link-sidebar">
-        <router-link id="text-router" to="/">
-          <span class="pi pi-bell " id="icon-router" v-tooltip.right="'Notificações'"></span>
-          <span>Notificações</span>
-        </router-link>
-      </div> -->
       <div class="link-sidebar">
         <router-link id="text-router" to="/">
           <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
@@ -43,12 +37,6 @@
 
         </div>
         <div class="link-sidebar">
-          <!-- <router-link id="text-router" to="/about">
-            <span class="pi pi-sun" id="icon-router" v-tooltip.right="'Modo Escuro'"></span>
-            <span>Modo Escuro
-            </span>
-            <InputSwitch class="switch-space" id="darkmode" v-model="checked" /> 
-          </router-link> -->
         </div>
       </div>
     </div>

@@ -7,24 +7,24 @@
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
                 <div style="display: flexbox;">
-                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story" autoResize
-                        rows="25" cols="100" />
+                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
+                        autoResize rows="25" cols="100" />
                 </div>
                 <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" /> -->
                 <div class="output-user">
                     <!-- <span>s</span> -->
                     <div class="txt">
                         <Textarea v-model="prototipoGpt.pattern_suggestion" class="user-text" disabled
-                            placeholder="User Story Padronizada" autoResize  cols="100" />
+                            placeholder="User Story Padronizada" autoResize cols="100" />
                     </div>
                     <!-- <span>s</span> -->
                     <div style="background-color: antiquewhite;" class="txt">
-                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled placeholder="Requirements smells Identificados"
-                            autoResize  cols="100" />
+                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
+                            placeholder="Requirements smells Identificados" autoResize cols="100" />
                     </div>
                 </div>
             </div>
-            <my-button  class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
+            <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
 
 
         </div>
@@ -75,6 +75,10 @@ export default {
                 pattern_suggestion: null,
                 smells_id: null
             },
+            token: '',
+            username: '',
+            nome: '',
+            expiration: null,
             textLength: false,
         }
     },
@@ -83,6 +87,7 @@ export default {
     },
     methods: {
         sendRequest(prototipo) {
+            this.getUserData()
             this.isLoading = true
             const formData = new FormData();
             formData.append('prompt', prototipo);
@@ -90,11 +95,12 @@ export default {
             console.log(Array.from(formData.entries()));
 
             axios({
-                url: 'http://127.0.0.1:5000/historias',
+                url: `http://127.0.0.1:5000/historias?token=<${this.token}>`,
                 method: 'POST',
                 data: formData
             })
                 .then(response => {
+                    alert(this.token)
                     console.log(response.data),
                         this.prototipoGpt.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototipoGpt.pattern_suggestion)
@@ -124,9 +130,9 @@ export default {
             return text.slice(startIndex)
         },
         checkTextLength() {
-            return this.prototipoGpt.input_us.value.length  >= 35
-            ? this.textLength = true
-            : this.textLength = false
+            return this.prototipoGpt.input_us.value.length >= 35
+                ? this.textLength = true
+                : this.textLength = false
         },
         clear() {
             this.prototipoGpt.input_us = ""
@@ -162,8 +168,15 @@ export default {
                     console.error(error);
                 });
         },
+        getUserData() {
+            this.token = localStorage.getItem('token');
+            this.username = localStorage.getItem('username');
+            this.nome = localStorage.getItem('nome');
+            this.expiration = localStorage.getItem('expiration');
+        },
 
     },
+
     components: {
         Textarea,
         LoaderView,
@@ -174,10 +187,11 @@ export default {
 </script>
   
 <style>
-.txt{
+.txt {
     height: 240px;
     bottom: 0px !important;
 }
+
 /* .submit-story { 
     float: right; 
     margin-right: 25vw; 
@@ -232,7 +246,7 @@ export default {
     position: absolute;
 }
 
-::placeholder{
+::placeholder {
     color: rgb(36, 32, 32);
 }
 
@@ -240,7 +254,7 @@ export default {
     margin-right: 1vh;
     border: 2px solid;
     border-radius: 5px;
-    color:black;
+    color: black;
     transition: border-color 0.3s ease-out;
     width: max(95%, 15vh) !important;
     /* height: calc(15vh - 4px) !important; */
@@ -273,7 +287,7 @@ export default {
     .submit-story {
         position: relative;
         bottom: 1%;
-        top:-120px;
+        top: -120px;
     }
 
 }
