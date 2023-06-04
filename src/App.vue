@@ -1,7 +1,7 @@
 <template>
 <div>
   <CreateAccount/>
-  <SidebarView/>
+  <!-- <SidebarView/> -->
   <router-view />
 
 </div>
@@ -13,7 +13,7 @@
 // import InputSwitch from 'primevue/inputswitch';
 // import LoaderView from './views/LoaderView.vue';
 // import Button from 'primevue/button';
-import SidebarView from './components/SidebarView.vue';
+// import SidebarView from './components/SidebarView.vue';
 import CreateAccount from './components/CreateAccount.vue';
 import { defineComponent } from 'vue';
 
@@ -45,7 +45,7 @@ export default defineComponent({
     }
   },
   components: {
-    SidebarView,
+    // SidebarView,
     CreateAccount
 },
 })

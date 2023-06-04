@@ -1,5 +1,6 @@
 <template>
     <div>
+        <SidebarView/>
         <div class="big-number"> 
             <span class="desc-total-users">Total de user stories avaliadas  </span>
             <span class="total_users"  v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
@@ -42,6 +43,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import LoaderView from '../components/LoaderView.vue';
+import SidebarView from '../components/SidebarView.vue';
 import Chart from 'primevue/chart';
 const axios = require('axios');
 import Message from 'primevue/message';

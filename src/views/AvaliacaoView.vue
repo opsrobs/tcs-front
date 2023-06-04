@@ -1,6 +1,7 @@
 <template>
     <div style="position: relative;">
         <Toast />
+        <SidebarView/>
         <!-- <my-Loading class="loading" :active='isLoading' :is-full-page="fullPage" :loader='loader' /> -->
         <div class="avaliacao">
             <div class="grid-text-style">
@@ -36,6 +37,7 @@
 <script>
 import Textarea from 'primevue/textarea';
 import LoaderView from '../components/LoaderView.vue';
+import SidebarView from '../components/SidebarView.vue';
 import Toast from 'primevue/toast';
 
 const axios = require('axios');
@@ -180,6 +182,7 @@ export default {
     components: {
         Textarea,
         LoaderView,
+        SidebarView,
         Toast
     }
 }

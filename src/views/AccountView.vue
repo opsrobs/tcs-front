@@ -1,6 +1,6 @@
 <template>
     <div style="background-color: aqua;">
-        <SidebarView :isVisible="showSidebar" />
+        <SidebarView />
         <body>
             <div class="background">
                 <div class="shape"></div>
