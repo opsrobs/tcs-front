@@ -1,24 +1,24 @@
 <template>
   <div v-if="isVisible">
     <div class="sidenav">
-      <div class="link-sidebar">
-        <div class="hello-login" v-if="isLogged">
-          <row>Olá, </row><br />
-          <span class="hello-name">{{ nome }}</span>
+      <div class="hello-login" v-if="isLogged">
+        <row class="hello">Olá, </row>
+        <span class="hello-name">{{ nome }}</span>
 
-        </div>
+      </div>
+      <div class="link-sidebar" v-if="isLogged">
         <router-link id="text-router" to="/avaliacao">
           <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Nova Avaliação'"></span>
           <span>Nova Avaliação</span>
         </router-link>
       </div>
-      <div class="link-sidebar">
+      <div class="link-sidebar" v-if="isLogged">
         <router-link id="text-router" to="/DashboardView">
           <span class="pi pi-home" id="icon-router" v-tooltip.right="'Dashboard'"></span>
           <span>Dashboard</span>
         </router-link>
       </div>
-      <div class="link-sidebar">
+      <div class="link-sidebar" v-if="isLogged">
         <router-link id="text-router" to="/">
           <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
           <span>Histórias de Usuario</span>
@@ -67,6 +67,7 @@ export default {
       // verifyLogin()
     });
 
+
     function verifyLogin() {
 
       if (isLogged.value) {
@@ -79,7 +80,6 @@ export default {
         console.log(isLogged.value + "<--------")
       }
     }
-
 
     function getUserData() {
       token.value = localStorage.getItem('token');
@@ -112,19 +112,31 @@ export default {
       nome,
       verifyLogin,
     };
-  }
+  },
+
 };
 
 </script>
 
 
 <style>
+.hello {
+  justify-content: start;
+  display: flex;
+  margin-left: 13px;
+  font-family: monospace;
+  font-size: 20px;
+}
+
 .hello-login {
   margin-left: 15px;
 }
 
 .hello-name {
   margin-left: 10px;
+  font-style: italic;
+  font-family: monospace;
+  font-size: 16px;
   font-style: italic;
 }
 
