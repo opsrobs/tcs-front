@@ -2,7 +2,7 @@
   <div v-if="isVisible">
     <div class="sidenav">
       <div class="hello-login" v-if="isLogged">
-        <row class="hello">Olá, </row>
+        <row class="hello">Olá, </row><br />
         <span class="hello-name">{{ nome }}</span>
 
       </div>
@@ -19,7 +19,7 @@
         </router-link>
       </div>
       <div class="link-sidebar" v-if="isLogged">
-        <router-link id="text-router" to="/">
+        <router-link id="text-router" to="/detalhes">
           <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
           <span>Histórias de Usuario</span>
         </router-link>

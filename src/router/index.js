@@ -27,6 +27,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AvaliationView.vue')
   },
   {
+    path: '/Detalhes',
+    name: 'Detalhes de prompt', 
+    component: () => import(/* webpackChunkName: "about" */ '../views/InstructionsPromptView.vue')
+  },
+  {
     path: '/Account',
     name: 'Create Account',
     component: CreateAccount
