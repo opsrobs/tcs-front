@@ -97,12 +97,11 @@ export default {
             console.log(Array.from(formData.entries()));
 
             axios({
-                url: `http://127.0.0.1:5000/historias?token=<${this.token}>`,
+                url: `http://127.0.0.1:5000/historias?token=${this.token}`,
                 method: 'POST',
                 data: formData
             })
                 .then(response => {
-                    alert(this.token)
                     console.log(response.data),
                         this.prototipoGpt.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototipoGpt.pattern_suggestion)

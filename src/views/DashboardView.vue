@@ -57,6 +57,7 @@ const isLoading = ref(true);
 const isNotError = ref(true);
 const total_us = ref(0);
 const chartData = ref();
+const token = ref('');
 const chartOptions = ref();
 const smellsList = ref([]);
 let stories = ref([]);
@@ -88,11 +89,16 @@ function formatText(text) {
     let startIndex = text.indexOf('\n\n') + 2
     return text.slice(startIndex)
 }
+const setToken = () =>{
+    token.value = localStorage.getItem('token');
+    return token.value
+}
 
 async function fetchStories() {
+    setToken()
     try {
 
-        const response = await axios.get('http://127.0.0.1:5000/gethistorias');
+        const response = await axios.get(`http://127.0.0.1:5000/gethistorias?token=${token.value}`);
         const responseData = response.data;
         stories.value = [];
         for (const story of responseData) {

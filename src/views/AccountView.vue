@@ -77,7 +77,7 @@ export default {
             localStorage.setItem('token', token);
             localStorage.setItem('username', username);
             localStorage.setItem('expiration', expiration);
-            localStorage.setItem('nome', this.getUsernameFromEmail(username));
+            localStorage.setItem('nome', this.usuario.nome);
         },
         createAccount() {
             this.usuario.email = '',
@@ -141,7 +141,7 @@ export default {
                     }
                 });
 
-                console.log(response.data.token);
+                console.log(response.data);
                 this.setUserData(response.data.token);
                 this.showSidebar = true;
                 this.$router.push('/DashboardView');
