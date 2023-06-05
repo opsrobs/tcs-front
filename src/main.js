@@ -12,6 +12,8 @@ import Loading from 'vue-loading-overlay';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
+import 'bootstrap/dist/css/bootstrap.css'
+
 
 import { useToast } from "primevue/usetoast";
 
