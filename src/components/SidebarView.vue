@@ -2,8 +2,8 @@
   <div v-if="isVisible">
     <div class="sidenav">
       <div class="hello-login" v-if="isLogged">
-        <row class="hello">Olá, </row><br />
-        <span class="hello-name">{{ nome }}</span>
+        <row class="hello">Olá, </row>
+        <span class="hello-name">{{ username }}</span>
 
       </div>
       <div class="link-sidebar" v-if="isLogged">
@@ -19,7 +19,7 @@
         </router-link>
       </div>
       <div class="link-sidebar" v-if="isLogged">
-        <router-link id="text-router" to="/detalhes">
+        <router-link id="text-router" to="/Detalhes">
           <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
           <span>Histórias de Usuario</span>
         </router-link>
@@ -84,7 +84,6 @@ export default {
     function getUserData() {
       token.value = localStorage.getItem('token');
       username.value = localStorage.getItem('username');
-      nome.value = localStorage.getItem('nome');
       expiration.value = localStorage.getItem('expiration');
       // Se algum valor não for encontrado, é melhor devolver um objeto vazio ou nulo
       if (!token.value || !username.value || !expiration.value) {
@@ -101,7 +100,6 @@ export default {
       return {
         token,
         username,
-        nome,
         expiration: expirationDate
       };
     }

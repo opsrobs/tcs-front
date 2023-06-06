@@ -1,10 +1,10 @@
 <template>
-<div>
-  <CreateAccount/>
-  <!-- <SidebarView/> -->
-  <router-view />
+  <div>
+    <CreateAccount />
+    <!-- <SidebarView/> -->
+    <router-view />
 
-</div>
+  </div>
 </template>
 
 
@@ -16,6 +16,7 @@
 // import SidebarView from './components/SidebarView.vue';
 import CreateAccount from './components/CreateAccount.vue';
 import { defineComponent } from 'vue';
+import axios from 'axios';
 
 export default defineComponent({
   data() {
@@ -25,11 +26,29 @@ export default defineComponent({
       visible: true,
       isLoading: true,
       checked: false,
+      token: null,
 
     }
   },
   mounted() {
+    this.setToken()
 
+    axios({
+      url: `http://127.0.0.1:5000/instrucao?token=${this.token}`,
+      method: 'GET',
+    })
+      .then(response => {
+        console.log(response.data)
+        this.instrucoes = response.data
+      })
+      .catch(error => {
+        console.error(error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('nome');
+        localStorage.removeItem('expiration');
+        this.$router.push('/Account');
+      });
   },
   setup() {
 
@@ -42,12 +61,16 @@ export default defineComponent({
       $switch.addEventListener('change', function () {
         $html.classList.toggle('dark-mode')
       })
-    }
+    },
+    setToken() {
+      this.token = localStorage.getItem('token');
+
+    },
   },
   components: {
     // SidebarView,
     CreateAccount
-},
+  },
 })
 
 
@@ -179,5 +202,5 @@ a:-webkit-any-link {
   color: black;
   cursor: pointer;
   text-decoration: none;
-} 
+}
 </style>

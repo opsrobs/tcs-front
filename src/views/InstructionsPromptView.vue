@@ -20,8 +20,8 @@
                         </SplitButton>
                     </td>
                 </tr>
-                <!-- <ConfirmDialog @click="messageDialog(c)" defaultFocus="reject">
-                </ConfirmDialog> -->
+                <ConfirmDialog @click="messageDialog(i)" defaultFocus="reject">
+                </ConfirmDialog>
 
             </tbody>
         </table>
@@ -31,7 +31,7 @@
 
         <label>Nova Instrução</label>
         <input v-model="novaInstrucao">
-        <button @click="GetRequest()">CLICK</button>
+        <button @click="checkTextLength()">CLICK</button>
 
 
 
@@ -41,12 +41,32 @@
 import axios from 'axios';
 import SidebarView from '@/components/SidebarView.vue';
 import SplitButton from 'primevue/splitbutton';
+import ConfirmDialog from 'primevue/confirmdialog'
+
 export default {
     data() {
         return {
             instrucoes: [],
             token: null,
-            novaInstrucao: ''
+            novaInstrucao: '',
+            opcao:null,
+            items: [
+                {
+                    label: 'Editar',
+                    icon: 'pi pi-refresh',
+                    command: () => {
+                        this.editar(this.carro)
+                        this.$toast.add({ severity: 'success', summary: 'Updated', detail: 'Data Updated', life: 3000 });
+                    }
+                },
+                {
+                    label: 'Delete',
+                    icon: 'pi pi-times',
+                    command: () => {
+                        this.messageDialog(this.carro)
+                    }
+                }
+            ]
         }
     },
     mounted() {
@@ -126,11 +146,52 @@ export default {
         setToken() {
             this.token = localStorage.getItem('token');
 
+        },
+        toastMessage(item) {
+            return this.opcao == 1
+                ? this.$toast.add({ severity: 'warn', summary: 'Delete', detail: item + ' deletado com sucesso!!', life: 3000 })
+                : this.$confirm.close();
+
+        },
+        messageDialog(car) {
+            return car != null ? this.$confirm.require({
+                message: `Você deseja deletar ${car.nome}?`,
+                header: 'Confirmar exclusão!!!',
+                icon: 'pi pi-exclamation-triangle',
+                acceptLabel: 'Sim',
+                rejectLabel: 'Não',
+                accept: () => {
+                    this.excluir(car)
+                    this.opcao = 1
+                    this.toastMessage(car.nome)
+                    this.$confirm.close();
+                    //this.load()
+                },
+                reject: () => {
+                    this.load()
+                    this.$confirm.close()
+
+                },
+                onHide: () => {
+                    this.load()
+                    this.$confirm.close()
+                }
+            })
+                : this.$confirm.close()
+        },
+        checkTextLength() {
+            this.instrucoes.forEach(element => {
+                console.log(JSON.stringify(element) + 'foreach')
+            });
+            return this.instrucoes.instrucao >= 35
+                ? this.textLength = true
+                : this.textLength = false
         }
     },
     components: {
         SidebarView,
-        SplitButton
+        SplitButton,
+        ConfirmDialog
     }
 }
 </script>
