@@ -61,15 +61,14 @@ export default {
 
         }
     }, methods: {
-        setUserData(token) {
+        setUserData(token, username) {
             // Primeiro, vamos decodificar o token para extrair o payload.
             // JWTs são de formato 'header.payload.signature'. Queremos o payload.
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const payload = JSON.parse(window.atob(base64));
-
+            console.log(username)
             // Agora que temos o payload, podemos extrair o nome do usuário e a data de expiração.
-            const username = payload.username;
             const expiration = payload.exp;
 
             // Finalmente, vamos armazenar essas informações no LocalStorage.
@@ -77,7 +76,7 @@ export default {
             localStorage.setItem('token', token);
             localStorage.setItem('username', username);
             localStorage.setItem('expiration', expiration);
-            localStorage.setItem('nome', this.usuario.nome);
+            // localStorage.setItem('nome', this.usuario.nome);
         },
         createAccount() {
             this.usuario.email = '',
@@ -142,7 +141,7 @@ export default {
                 });
 
                 console.log(response.data);
-                this.setUserData(response.data.token);
+                this.setUserData(response.data.token, response.data.nome);
                 this.showSidebar = true;
                 this.$router.push('/DashboardView');
             } catch (error) {
