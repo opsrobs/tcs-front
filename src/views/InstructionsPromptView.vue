@@ -8,24 +8,30 @@
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Instrução</th>
+                    <!-- <th scope="col"></th> -->
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="i in instrucoes" :key="i.id">
                     <td>{{ i.id }}</td>
-                    <td>{{ i.instrucao }}</td>
-                    <td @click="instrucao = i">
-                        <SplitButton label="Novo" @click="novo()" icon="pi pi-plus" :model="items"
-                            href="javascript:void(0)">
-                        </SplitButton>
+                    <td class="for-instrucao">{{ i.instrucao }}</td>
+                    <td class="xc">
+
+                        <div class="form-check">
+                            <SplitButton class="splitter" label="Novo" @click="novo()" icon="pi pi-plus" :model="items"
+                                href="javascript:void(0)">
+                            </SplitButton>
+
+                        </div>
                     </td>
+
                 </tr>
                 <ConfirmDialog @click="messageDialog(i)" defaultFocus="reject">
                 </ConfirmDialog>
 
             </tbody>
         </table>
-        
+
         <!-- <ConfirmDialog @click="messageDialog(c)" defaultFocus="reject">
                 </ConfirmDialog> -->
 
@@ -49,7 +55,7 @@ export default {
             instrucoes: [],
             token: null,
             novaInstrucao: '',
-            opcao:null,
+            opcao: null,
             items: [
                 {
                     label: 'Editar',
@@ -199,14 +205,33 @@ export default {
 .cont {
     margin-left: 16%;
     margin-top: 1%;
+    width: 80%;
     width: calc(84% - 10px);
-    float: right;
-    justify-content: center;
-    /* margin-left: 250px; */
-    /* position: absolute; */
     bottom: 0;
     top: 0;
-    max-width: 100%;
+    max-width: 65%;
+}
+
+.for-instrucao {
+    font-size: 14px;
+    text-align: left;
+}
+
+splitter {
+    height: 20px !important;
+    width: 80px !important;
+}
+
+.xc {
+    background-color: aqua;
+    vertical-align: middle !important
+}
+
+.p-splitbutton[data-v-5bb97d91] {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    /* display: inline-flex; */
+    position: relative;
 }
 
 li {
