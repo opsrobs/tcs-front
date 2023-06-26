@@ -2,52 +2,38 @@
     <div class="cont">
         <!-- <div> -->
         <SidebarView />
+        <Toast />
+        <div class="center-div">
+            <div v-show="habilitado" class="flex-container " style="margin-bottom: 3rem;">
+                <Textarea id="edit-instrucao" v-model="novaInstrucao" autoResize rows="1" cols="400" />
+                <div :class="classification" id="for-icons" @click="this.actionClick()">
+                </div>
+            </div>
+            <Divider v-show="habilitado" align="left" type="solid" />
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Instrução</th>
-                    <!-- <th scope="col"></th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="i in instrucoes" :key="i.id">
-                    <td>{{ i.id }}</td>
-                    <td class="for-instrucao">{{ i.instrucao }}</td>
-                    <td class="xc">
+            <div class="instructions" v-for="i in instrucoes" :key="i.id">
+                <div class="flex-container">
+                    <Textarea v-model="i.instrucao" autoResize rows="1" :readonly="i.ativo" cols="400" />
+                    <div class=" pi pi-trash" id="for-icons" @click="this.readisValid(i)">
+                    </div>
+                    <div class=" pi pi-plus" id="for-icons" @click="this.newInstruction()">
+                    </div>
+                </div>
+                <Divider align="left" type="solid" />
+            </div>
 
-                        <div class="form-check">
-                            <SplitButton class="splitter" label="Novo" @click="novo()" icon="pi pi-plus" :model="items"
-                                href="javascript:void(0)">
-                            </SplitButton>
-
-                        </div>
-                    </td>
-
-                </tr>
-                <ConfirmDialog @click="messageDialog(i)" defaultFocus="reject">
-                </ConfirmDialog>
-
-            </tbody>
-        </table>
-
-        <!-- <ConfirmDialog @click="messageDialog(c)" defaultFocus="reject">
-                </ConfirmDialog> -->
-
-        <label>Nova Instrução</label>
-        <input v-model="novaInstrucao">
-        <button @click="checkTextLength()">CLICK</button>
-
-
-
+        </div>
+        <ConfirmDialog @click="messageDialog(i)" defaultFocus="reject">
+        </ConfirmDialog>
     </div>
 </template>
 <script>
 import axios from 'axios';
 import SidebarView from '@/components/SidebarView.vue';
-import SplitButton from 'primevue/splitbutton';
-import ConfirmDialog from 'primevue/confirmdialog'
+import ConfirmDialog from 'primevue/confirmdialog';
+import Toast from 'primevue/toast'
+import Textarea from 'primevue/textarea';
+import Divider from 'primevue/divider';
 
 export default {
     data() {
@@ -55,6 +41,8 @@ export default {
             instrucoes: [],
             token: null,
             novaInstrucao: '',
+            habilitado: false,
+            classification: '',
             opcao: null,
             items: [
                 {
@@ -92,6 +80,30 @@ export default {
             });
     },
     methods: {
+        readisValid(i) {
+            if (i.ativo === true) {
+                this.$toast.add({ severity: 'error', detail: ' Não é possivel excluir instruções cadastradas pelo sistema!', life: 3000 })
+
+            } else {
+                this.messageDialog(i)
+                this.habilitado = !this.habilitado
+                this.novaInstrucao = i.instrucao
+
+            }
+        },
+        newInstruction() {
+            this.classification = 'pi pi-send'
+            this.habilitado = !this.habilitado
+            this.novaInstrucao
+
+        },
+        actionClick() {
+            if (this.novaInstrucao != '') {
+                this.SendRequest()
+            } else {
+                alert('invalido')
+            }
+        },
         GetRequest() {
             this.setToken()
 
@@ -121,7 +133,11 @@ export default {
                 .then(response => {
                     console.log(response.data)
                     this.instrucoes = response.data,
-                        this.GetRequest()
+                        this.$toast.add({ severity: 'success', summary: 'Registro gravado', detail: 'Registro gravados com sucesso', life: 3000 }),
+                        this.GetRequest(),
+                        this.habilitado = !this.habilitado,
+                        this.novaInstrucao = null
+
                 })
                 .catch(error => {
                     console.error(error);
@@ -159,27 +175,27 @@ export default {
                 : this.$confirm.close();
 
         },
-        messageDialog(car) {
-            return car != null ? this.$confirm.require({
-                message: `Você deseja deletar ${car.nome}?`,
+        messageDialog(instrucao) {
+            return instrucao != null ? this.$confirm.require({
+                message: `Você deseja deletar "${instrucao.instrucao}"?`,
                 header: 'Confirmar exclusão!!!',
                 icon: 'pi pi-exclamation-triangle',
                 acceptLabel: 'Sim',
                 rejectLabel: 'Não',
                 accept: () => {
-                    this.excluir(car)
+                    this.excluir(instrucao)
                     this.opcao = 1
-                    this.toastMessage(car.nome)
+                    this.toastMessage(instrucao.instrucao)
                     this.$confirm.close();
                     //this.load()
                 },
                 reject: () => {
-                    this.load()
+                    this.GetRequest()
                     this.$confirm.close()
 
                 },
                 onHide: () => {
-                    this.load()
+                    this.GetRequest()
                     this.$confirm.close()
                 }
             })
@@ -196,12 +212,38 @@ export default {
     },
     components: {
         SidebarView,
-        SplitButton,
-        ConfirmDialog
+        ConfirmDialog,
+        Divider,
+        Toast,
+        Textarea
     }
 }
 </script>
 <style>
+.center-div{
+    /* background-color: aqua; */
+}
+.flex-container {
+    display: flex;
+    align-items: center;
+    /* Para alinhar verticalmente no centro */
+}
+
+#for-icons {
+    margin: 6px 6px;
+    cursor: pointer !important;
+    
+}
+
+#edit-instrucao {
+    border: 2px dashed red !important;
+}
+
+.flex-grow {
+    flex-grow: 1;
+    margin-right: 1rem;
+}
+
 .cont {
     margin-left: 16%;
     margin-top: 1%;
@@ -211,36 +253,4 @@ export default {
     top: 0;
     max-width: 65%;
 }
-
-.for-instrucao {
-    font-size: 14px;
-    text-align: left;
-}
-
-splitter {
-    height: 20px !important;
-    width: 80px !important;
-}
-
-.xc {
-    background-color: aqua;
-    vertical-align: middle !important
-}
-
-.p-splitbutton[data-v-5bb97d91] {
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
-    /* display: inline-flex; */
-    position: relative;
-}
-
-li {
-    display: flex;
-    justify-content: left;
-}
-
-/* 
-table {
-    background-color: aqua
-} */
 </style>
