@@ -86,8 +86,6 @@ export default {
 
             } else {
                 this.messageDialog(i)
-                this.habilitado = !this.habilitado
-                this.novaInstrucao = i.instrucao
 
             }
         },
@@ -158,7 +156,9 @@ export default {
                 .then(response => {
                     console.log(response.data)
                     this.instrucoes = response.data,
-                        this.GetRequest()
+                        this.GetRequest(),
+                        this.habilitado = !this.habilitado,
+                        this.novaInstrucao = null
                 })
                 .catch(error => {
                     console.error(error);
@@ -183,7 +183,7 @@ export default {
                 acceptLabel: 'Sim',
                 rejectLabel: 'Não',
                 accept: () => {
-                    this.excluir(instrucao)
+                    this.DeleteRequest(instrucao.id)
                     this.opcao = 1
                     this.toastMessage(instrucao.instrucao)
                     this.$confirm.close();
@@ -220,9 +220,6 @@ export default {
 }
 </script>
 <style>
-.center-div{
-    /* background-color: aqua; */
-}
 .flex-container {
     display: flex;
     align-items: center;

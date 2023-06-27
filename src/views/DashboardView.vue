@@ -10,7 +10,8 @@
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
 
-                <div class="card" id="chart-user">
+    
+                <div class="card" id="chart-user" style="border: 1px dashed;">
                     <div v-if="isNotError">
                         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
                     </div>
@@ -20,7 +21,8 @@
                             height="300" />
                     </div>
                 </div>
-                <div class="top-users">
+    
+                <div class="top-users" style="border: 1px dashed;">
                     <span v-for="story in topThreeStories" :key="story.id">
                         <div style="text-align: justify; border: 1px solid black;">
                             <div class="input-request-us">
@@ -125,9 +127,14 @@ function setChartData(smells) {
     const valores = [];
 
     for (const chave in smells) {
-        labels.push(chave);
+        const chaveFormatada = addLineBreaksToKey(chave); 
+        labels.push(chaveFormatada);
+        console.log(chaveFormatada)
         valores.push(smells[chave]);
     }
+    labels.sort((a, b) => a.length - b.length);
+
+    // console.log(labels)
 
     return {
         labels,
@@ -142,6 +149,11 @@ function setChartData(smells) {
         ]
     };
 }
+
+function addLineBreaksToKey(chave) {
+  return chave.replace(/,/g, ',\n');
+}
+
 
 function setChartOptions() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -207,7 +219,6 @@ setChartOptions();
 
 #chart-user {
     margin: 2px;
-    border: 1px dashed;
     border-radius: 1%;
 }
 
@@ -216,7 +227,6 @@ setChartOptions();
     align-items: center;
     width: 100%;
     margin: 2px;
-    border: 1px dashed;
     border-radius: 1%;
     height: 100%;
 

@@ -20,8 +20,8 @@
       </div>
       <div class="link-sidebar" v-if="isLogged">
         <router-link id="text-router" to="/Detalhes">
-          <span class="pi pi-chart-pie" id="icon-router" v-tooltip.right="'Histórias de Usuario'"></span>
-          <span>Histórias de Usuario</span>
+          <span class="pi pi-file-edit" id="icon-router" v-tooltip.right="'Instruções'"></span>
+          <span>Instruções</span>
         </router-link>
       </div>
       <div class="link-footer">

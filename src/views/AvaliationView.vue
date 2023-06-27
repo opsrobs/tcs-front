@@ -1,34 +1,43 @@
 <template>
-    <div style="position: relative;">
+    <div>
+        <SidebarView />
         <Toast />
-        <SidebarView/>
-        <!-- <my-Loading class="loading" :active='isLoading' :is-full-page="fullPage" :loader='loader' /> -->
-        <div class="avaliacao">
-            <div class="grid-text-style">
+        <div class="charts-dash">
+            <div style="text-align:justify; margin-top: 2px;">
+                <span>PROTÓTIPO DE AVALIAÇÃO DA QUALIDADE DE HISTÓRIAS DE USUÁRIO</span>
+                <br/><span>COM BASE EM REQUIREMENTS SMELLS DETECTADOS COM AUXÍLIO DO GPT-3</span>
+            </div>
+            <div class="cards-chart">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
-                <div style="display: flexbox;">
-                    <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
-                        autoResize rows="25" cols="100" />
-                </div>
-                <!-- <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" /> -->
-                <div class="output-user">
-                    <!-- <span>s</span> -->
-                    <div class="txt">
-                        <Textarea v-model="prototipoGpt.pattern_suggestion" class="user-text" disabled
-                            placeholder="User Story Padronizada" autoResize cols="100" />
-                    </div>
-                    <!-- <span>s</span> -->
-                    <div style="background-color: antiquewhite;" class="txt">
-                        <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
-                            placeholder="Requirements smells Identificados" autoResize cols="100" />
-                    </div>
-                </div>
-            </div>
-            <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" />
 
+                <div id="chart-user">
+                    <div>
+                        <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
+                            autoResize rows="17" cols="100" />
+                    </div>
+                </div>
+                <div class="top-users">
+                    <span>
+                        <div style="text-align: justify;">
+                            <div class="input-request-us">
+                                <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
+                                    placeholder="User Story Padronizada" class="user-text" autoResize rows="8"
+                                    cols="100" /><br />
+                            </div>
+                            <div class="output-request-us">
+                                <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
+                                    placeholder="User Story Padronizada" autoResize rows="8" cols="100" />
+                            </div>
+                        </div>
+                    </span>
+                </div>
+
+            </div>
+            <br />
 
         </div>
+        <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" :disabled="!isTextareaValid" />
 
         <LoaderView v-show="isLoading" />
     </div>
@@ -85,7 +94,9 @@ export default {
         }
     },
     computed: {
-
+        isTextareaValid() {
+            return this.prototipoGpt.input_us.length > 20;
+        },
     },
     methods: {
         sendRequest(prototipo) {
@@ -187,23 +198,35 @@ export default {
 }
 
 </script>
-  
 <style>
-.txt {
-    height: 240px;
-    bottom: 0px !important;
+.output-user {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2px;
+    border-radius: 1%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: auto;
 }
 
-/* .submit-story { 
-    float: right; 
-    margin-right: 25vw; 
+.input-us {
+    width: 50%;
+    float: left;
+}
+
+.submit-story {
+    float: right;
+    margin-right: 25vw;
     display: flex;
     height: 5vh;
     width: 10vh;
     position: relative;
     top: max(15vh, 250px);
     font-size: min(18px, 2vh);
-} */
+}
+
 .loading {
     color: red
 }
@@ -236,12 +259,6 @@ export default {
     margin-top: 10vh;
     max-width: 100%;
     display: flex;
-    justify-content: center;
-}
-
-.output-user {
-    /* display: grid; */
-    grid-template-rows: auto;
 }
 
 .column-output {
@@ -288,8 +305,8 @@ export default {
 
     .submit-story {
         position: relative;
-        bottom: 1%;
-        top: -120px;
+        /* bottom: 1%; */
+        /* top: -120px; */
     }
 
 }
