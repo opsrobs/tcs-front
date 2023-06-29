@@ -1,43 +1,53 @@
 <template>
-    <div>
+    <div style="background-color: #F2EFFA;">
         <SidebarView />
         <Toast />
-        <div class="charts-dash">
-            <div style="text-align:justify; margin-top: 2px;">
-                <span>PROTÓTIPO DE AVALIAÇÃO DA QUALIDADE DE HISTÓRIAS DE USUÁRIO</span>
-                <br/><span>COM BASE EM REQUIREMENTS SMELLS DETECTADOS COM AUXÍLIO DO GPT-3</span>
-            </div>
-            <div class="cards-chart">
+        <div class="text-dash">
+            <div class="cards-area">
                 <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                 </div>
-
                 <div id="chart-user">
+                    <div class="title-area">
+                        <span>Adicione sua História de Usuário abaixo:</span>
+                    </div>
                     <div>
                         <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
                             autoResize rows="17" cols="100" />
                     </div>
                 </div>
-                <div class="top-users">
+                <div class="top-divs">
                     <span>
-                        <div style="text-align: justify;">
-                            <div class="input-request-us">
-                                <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
-                                    placeholder="User Story Padronizada" class="user-text" autoResize rows="8"
-                                    cols="100" /><br />
+                            <div class="one">
+                                <div class="title-area">
+                                    <span>Resultado Padronizado:</span>
+                                </div>
+                                <div class="input-request-us">
+                                    <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
+                                        placeholder="User Story Padronizada" class="user-text" autoResize rows="7"
+                                        cols="100" /><br />
+                                </div>
+
                             </div>
-                            <div class="output-request-us">
-                                <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
-                                    placeholder="User Story Padronizada" autoResize rows="8" cols="100" />
+                            <div class="two">
+
+                                <div class="title-area">
+                                    <span>Resultado Requirements Smells:</span>
+                                </div>
+                                <div class="output-request-us">
+                                    <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
+                                        placeholder="Smells identificados" autoResize rows="7" cols="100" />
+                                </div>
                             </div>
-                        </div>
                     </span>
                 </div>
 
             </div>
-            <br />
-
         </div>
-        <my-button class="submit-story" label="Submit" @click="sendRequest(prototipoGpt.input_us)" :disabled="!isTextareaValid" />
+        <div class="pos-button"> 
+            <my-button style="background-color: #9d2bb4 ;" label="Submit" @click="sendRequest(prototipoGpt.input_us)"
+                :disabled="!isTextareaValid" />
+            
+        </div>
 
         <LoaderView v-show="isLoading" />
     </div>
@@ -199,6 +209,62 @@ export default {
 
 </script>
 <style>
+.cards-area {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    top:2vh;
+    /* grid-auto-rows: 200px; */
+}
+.one{
+    top:0;
+    position: absolute;
+
+}
+.two{
+    bottom:0;
+    position: absolute;
+
+}
+.pos-button{
+    margin-left: 16%;
+    display: flex;
+    justify-content: center;
+}
+.top-divs {
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -5px;
+    width: 100%;
+    border-radius: 1%;
+    height: 100%;
+
+    display: flex;
+    grid-template-rows: auto;
+}
+
+.title-area {
+    border-radius: 5px;
+    width: 25rem;
+    text-align: justify;
+    font-size: 18px;
+    background-color: #D5CCF8;
+    margin-left: 13px;
+    margin-bottom: 5px;
+}
+
+.text-dash {
+    margin-left: 15%;
+    width: calc(84% - 10px);
+    justify-content: center;
+    position: relative;
+    bottom: 0;
+    top:-20px;
+    display: inline-block;
+    max-width: 100%;
+}
+
+
 .output-user {
     justify-content: center;
     align-items: center;
@@ -216,16 +282,6 @@ export default {
     float: left;
 }
 
-.submit-story {
-    float: right;
-    margin-right: 25vw;
-    display: flex;
-    height: 5vh;
-    width: 10vh;
-    position: relative;
-    top: max(15vh, 250px);
-    font-size: min(18px, 2vh);
-}
 
 .loading {
     color: red
@@ -233,7 +289,7 @@ export default {
 
 .submit-story {
     margin-right: 6vw;
-    top: 10px;
+    top: 5px;
     position: relative;
     background-color: #9d2bb4;
     border: none;
