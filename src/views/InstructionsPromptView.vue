@@ -4,16 +4,24 @@
         <SidebarView />
         <Toast />
         <div class="center-div">
-            <div v-show="habilitado" class="flex-container " style="margin-bottom: 3rem;">
-                <Textarea id="edit-instrucao" v-model="novaInstrucao" autoResize rows="1" cols="400" />
+            <div v-show="habilitado" class="flex-container ">
+                <Textarea ref="textareaElement" id="edit-instrucao" v-model="novaInstrucao" autoResize rows="1"
+                    cols="400" />
                 <div :class="classification" id="for-icons" @click="this.actionClick()">
                 </div>
+                <div class=" pi pi-times-circle" id="for-icons" @click="this.cancelNewInstruction()">
+                </div>
             </div>
+            <div v-show="habilitado"> 
+                <br/><span class="tips" v-show="!textSize">Você precisa inserir ainda mais {{ size }} caracteres na intrução</span>
+
+            </div>
+
             <Divider v-show="habilitado" align="left" type="solid" />
 
             <div class="instructions" v-for="i in instrucoes" :key="i.id">
                 <div class="flex-container">
-                    <Textarea v-model="i.instrucao" autoResize rows="1" :readonly="i.ativo" cols="400" />
+                    <Textarea v-model="i.instrucao" autoResize rows="1" :readonly=true cols="400" />
                     <div class=" pi pi-trash" id="for-icons" @click="this.readisValid(i)">
                     </div>
                     <div class=" pi pi-plus" id="for-icons" @click="this.newInstruction()">
@@ -41,8 +49,10 @@ export default {
             instrucoes: [],
             token: null,
             novaInstrucao: '',
+            isSize:true,
+            valueOfReferer: 30,
             habilitado: false,
-            classification: '',
+            classification: 'pi pi-send',
             opcao: null,
             items: [
                 {
@@ -79,6 +89,14 @@ export default {
 
             });
     },
+    computed: {
+        textSize() {
+            return this.novaInstrucao.length > this.valueOfReferer;
+        },
+        size() {
+            return this.novaInstrucao.length - this.valueOfReferer;
+        },
+    },
     methods: {
         readisValid(i) {
             if (i.ativo === true) {
@@ -89,15 +107,25 @@ export default {
 
             }
         },
+        cancelNewInstruction(){
+            this.habilitado = !this.habilitado
+            return 
+        },
         newInstruction() {
-            this.classification = 'pi pi-send'
             this.habilitado = !this.habilitado
             this.novaInstrucao
 
+            if (this.habilitado) {
+            this.isSize=false
+                this.$nextTick(() => {
+                    this.$refs.textareaElement.$el.focus();
+                });
+            }
+
         },
         actionClick() {
-            if (this.novaInstrucao != '') {
-                this.SendRequest()
+            if (this.novaInstrucao != '' && this.size >29) {
+                // this.SendRequest()
             } else {
                 alert('invalido')
             }
@@ -201,14 +229,6 @@ export default {
             })
                 : this.$confirm.close()
         },
-        checkTextLength() {
-            this.instrucoes.forEach(element => {
-                console.log(JSON.stringify(element) + 'foreach')
-            });
-            return this.instrucoes.instrucao >= 35
-                ? this.textLength = true
-                : this.textLength = false
-        }
     },
     components: {
         SidebarView,
@@ -220,6 +240,13 @@ export default {
 }
 </script>
 <style>
+.tips{
+    font-size: 12px;
+    margin-left: 15px;
+    float: left !important;
+    margin-top: -20px;
+    color: red;
+}
 .flex-container {
     display: flex;
     align-items: center;
@@ -229,11 +256,12 @@ export default {
 #for-icons {
     margin: 6px 6px;
     cursor: pointer !important;
-    
+
 }
 
 #edit-instrucao {
-    border: 2px dashed red !important;
+    border-bottom: 2px dashed red !important;
+    border-radius: 10px;
 }
 
 .flex-grow {
@@ -243,7 +271,6 @@ export default {
 
 .cont {
     margin-left: 16%;
-    margin-top: 1%;
     width: 80%;
     width: calc(84% - 10px);
     bottom: 0;

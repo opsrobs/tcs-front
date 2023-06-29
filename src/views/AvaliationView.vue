@@ -8,7 +8,7 @@
                 </div>
                 <div id="chart-user">
                     <div class="title-area">
-                        <span>Adicione sua História de Usuário abaixo:</span>
+                        <span style="margin: 20px;">Adicione sua História de Usuário abaixo:</span>
                     </div>
                     <div>
                         <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
@@ -17,36 +17,34 @@
                 </div>
                 <div class="top-divs">
                     <span>
-                            <div class="one">
-                                <div class="title-area">
-                                    <span>Resultado Padronizado:</span>
-                                </div>
-                                <div class="input-request-us">
-                                    <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
-                                        placeholder="User Story Padronizada" class="user-text" autoResize rows="7"
-                                        cols="100" /><br />
-                                </div>
-
+                        <div class="one">
+                            <div class="title-area">
+                                <span style="margin: 20px;">Resultado Padronizado:</span>
                             </div>
-                            <div class="two">
-
-                                <div class="title-area">
-                                    <span>Resultado Requirements Smells:</span>
-                                </div>
-                                <div class="output-request-us">
-                                    <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
-                                        placeholder="Smells identificados" autoResize rows="7" cols="100" />
-                                </div>
+                            <div class="input-request-us">
+                                <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
+                                    placeholder="User Story Padronizada" class="user-text" autoResize rows="7"
+                                    cols="100" /><br />
                             </div>
+                        </div>
+                        <div class="two">
+
+                            <div class="title-area">
+                                <span style="margin: 20px;">Resultado Requirements Smells:</span>
+                            </div>
+                            <div class="output-request-us">
+                                <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
+                                    placeholder="Smells identificados" autoResize rows="7" cols="100" />
+                            </div>
+                        </div>
                     </span>
                 </div>
-
             </div>
         </div>
-        <div class="pos-button"> 
+        <div class="pos-button">
             <my-button style="background-color: #9d2bb4 ;" label="Submit" @click="sendRequest(prototipoGpt.input_us)"
                 :disabled="!isTextareaValid" />
-            
+
         </div>
 
         <LoaderView v-show="isLoading" />
@@ -213,24 +211,28 @@ export default {
     position: relative;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    top:2vh;
+    top: 2vh;
     /* grid-auto-rows: 200px; */
 }
-.one{
-    top:0;
+
+.one {
+    top: 0;
     position: absolute;
 
 }
-.two{
-    bottom:0;
+
+.two {
+    bottom: 0;
     position: absolute;
 
 }
-.pos-button{
+
+.pos-button {
     margin-left: 16%;
     display: flex;
     justify-content: center;
 }
+
 .top-divs {
     justify-content: space-between;
     align-items: center;
@@ -259,7 +261,7 @@ export default {
     justify-content: center;
     position: relative;
     bottom: 0;
-    top:-20px;
+    top: -20px;
     display: inline-block;
     max-width: 100%;
 }
@@ -387,5 +389,4 @@ export default {
     to {
         transform: rotate(1turn);
     }
-}
-</style>
+}</style>

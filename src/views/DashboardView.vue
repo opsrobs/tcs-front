@@ -27,14 +27,16 @@
                     <div class="top-users" style="border: 1px dashed;">
                         <span v-for="storieWithDetails in topThreeStories" :key="storieWithDetails.id">
                             <div style="text-align: justify;">
-                                <div class="input-request-us">
-                                    <span class="us_content">{{ storieWithDetails.story_input }}</span><br />
-                                    <span style="text-align: justify; color: rgb(62, 51, 51);">{{
-                                        removerCorrecao(storieWithDetails.details) }}</span><br />
-                                </div>
-                                <div class="output-request-us">
-                                    <a style="font-style: oblique; color: black;">Sugestão de correção:</a><br />
-                                    <span class="us_content">{{ obterCorrecao(storieWithDetails.details) }}</span>
+                                <div style="margin-left: 5px; margin-right: 5px;">
+                                    <div class="input-request-us">
+                                        <span class="us_content">{{ storieWithDetails.story_input }}</span><br />
+                                        <span style="text-align: justify; color: rgb(62, 51, 51);">{{
+                                            removerCorrecao(storieWithDetails.details) }}</span><br />
+                                    </div>
+                                    <div class="output-request-us">
+                                        <a style="font-style: oblique; color: black;">Sugestão de correção:</a><br />
+                                        <span class="us_content">{{ obterCorrecao(storieWithDetails.details) }}</span>
+                                    </div>
                                 </div>
                             </div>
                             <Divider align="left" type="solid" />
@@ -44,7 +46,7 @@
                 </div>
             </div>
             <LoaderView v-show="isLoading" />
-            <div class="b-register"> 
+            <div class="b-register">
                 <my-button @click="registerView()" label="Ver Historico" />
             </div>
         </div>
@@ -97,7 +99,7 @@ async function fetchSmells() {
     }
 }
 
-function registerView(){
+function registerView() {
     console.log(isRegister.value)
     return isRegister.value = !isRegister.value
 }
@@ -106,7 +108,7 @@ const topThreeStories = computed(() => {
     const totalStories = storieWithDetails.value.length;
     const startIndex = Math.max(totalStories - 2, 0);
     // console.log(JSON.stringify(storieWithDetails.value, null,2));
-    return storieWithDetails.value.slice(startIndex);
+    return storieWithDetails.value.slice(startIndex).sort((a, b) => b.id - a.id);
 });
 
 function obterCorrecao(texto) {
@@ -272,7 +274,7 @@ setChartOptions();
     font-size: max(1.5rem, 24px);
 }
 
-.b-register{
+.b-register {
     margin-top: 20px;
     margin-right: 30px;
     float: right;

@@ -136,7 +136,7 @@ function unionData() {
         });
     }
 
-    storieWithDetails.value.sort((a, b) => a.id - b.id);
+    storieWithDetails.value.sort((a, b) => b.id - a.id);
 }
 
 </script>
