@@ -2,8 +2,8 @@
   <div v-if="isVisible">
     <div class="sidenav">
       <div class="hello-login" v-if="isLogged">
-        <row class="hello">Olá, </row>
-        <span class="hello-name">{{ username }}</span>
+        <row class="hello">Olá,
+          {{ username }}</row>
 
       </div>
       <div class="link-sidebar" v-if="isLogged">

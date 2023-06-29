@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div  style="background-color: #F2EFFA;">
     <CreateAccount />
     <!-- <SidebarView/> -->
     <router-view />
