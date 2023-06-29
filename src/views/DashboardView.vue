@@ -1,68 +1,83 @@
 <template>
     <div>
-        <SidebarView/>
-        <div class="big-number"> 
-            <span class="desc-total-users">Total de user stories avaliadas  </span>
-            <span class="total_users"  v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
+        <SidebarView />
+        <div v-if=isRegister>
+            <AllStories />
         </div>
-        <div class="charts-dash">
-            <div class="cards-chart">
-                <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
-                </div>
+        <div v-else>
 
-    
-                <div class="card" id="chart-user" style="border: 1px dashed;">
-                    <div v-if="isNotError">
-                        <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
+            <div class="big-number">
+                <span class="desc-total-users">Total de user stories avaliadas </span>
+                <span class="total_users" v-tooltip.right="'Quantidade de User Stories'"> {{ total_us }}</span>
+            </div>
+            <div class="charts-dash">
+                <div class="cards-chart">
+                    <div class="c-loader " :style="{ display: isLoading ? 'block' : 'none' }">
                     </div>
-                    <div v-else>
-                        <Message severity="error" :closable="false"> {{ error_content }}</Message>
-                        <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300"
-                            height="300" />
-                    </div>
-                </div>
-    
-                <div class="top-users" style="border: 1px dashed;">
-                    <span v-for="story in topThreeStories" :key="story.id">
-                        <div style="text-align: justify; border: 1px solid black;">
-                            <div class="input-request-us">
-                                <a style="font-style: oblique; color: black;">Solicitação de user story {{ story.id }}</a><br/>
-                                <span class="us_content">{{ story.historia_input }}</span><br />
-                            </div>
-                            <div class="output-request-us">
-                                <a style="font-style: oblique; color: black;">Formatação de user story </a><br/>
-                                <span class="us_content">{{ formatText(story.historia_output) }}</span>
-                            </div>
+                    <div class="card" id="chart-user" style="border: 1px dashed;">
+                        <div v-if="isNotError">
+                            <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
                         </div>
-                    </span>
-                </div>
+                        <div v-else>
+                            <Message severity="error" :closable="false"> {{ error_content }}</Message>
+                            <img src="../components/resources/error-robot.png" alt="Erro ao obter grafico" width="300"
+                                height="300" />
+                        </div>
+                    </div>
+                    <div class="top-users" style="border: 1px dashed;">
+                        <span v-for="storieWithDetails in topThreeStories" :key="storieWithDetails.id">
+                            <div style="text-align: justify;">
+                                <div class="input-request-us">
+                                    <span class="us_content">{{ storieWithDetails.story_input }}</span><br />
+                                    <span style="text-align: justify; color: rgb(62, 51, 51);">{{
+                                        removerCorrecao(storieWithDetails.details) }}</span><br />
+                                </div>
+                                <div class="output-request-us">
+                                    <a style="font-style: oblique; color: black;">Sugestão de correção:</a><br />
+                                    <span class="us_content">{{ obterCorrecao(storieWithDetails.details) }}</span>
+                                </div>
+                            </div>
+                            <Divider align="left" type="solid" />
+                        </span>
+                    </div>
 
+                </div>
+            </div>
+            <LoaderView v-show="isLoading" />
+            <div class="b-register"> 
+                <my-button @click="registerView()" label="Ver Historico" />
             </div>
         </div>
-        <LoaderView v-show="isLoading" />
+
     </div>
 </template>
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import LoaderView from '../components/LoaderView.vue';
+import AllStories from '../components/AllStories.vue';
 import SidebarView from '../components/SidebarView.vue';
 import Chart from 'primevue/chart';
 const axios = require('axios');
 import Message from 'primevue/message';
+import Divider from 'primevue/divider';
+
 
 onMounted(() => {
     fetchSmells();
-    fetchStories()
+    fetchStories();
 });
 
 const isLoading = ref(true);
 const isNotError = ref(true);
+const isRegister = ref(false);
 const total_us = ref(0);
 const chartData = ref();
 const token = ref('');
 const chartOptions = ref();
 const smellsList = ref([]);
 let stories = ref([]);
+let smellDetails = ref([]);
+let storieWithDetails = ref([]);
 let error_content = ref();
 
 
@@ -72,6 +87,8 @@ async function fetchSmells() {
         smellsList.value = response.data;
         isLoading.value = false;
         chartData.value = setChartData(smellsList.value);
+        sugests();
+
     } catch (error) {
         isNotError.value = false;
         isLoading.value = false;
@@ -80,18 +97,42 @@ async function fetchSmells() {
     }
 }
 
+function registerView(){
+    console.log(isRegister.value)
+    return isRegister.value = !isRegister.value
+}
+
 const topThreeStories = computed(() => {
-    const totalStories = stories.value.length;
+    const totalStories = storieWithDetails.value.length;
     const startIndex = Math.max(totalStories - 2, 0);
-    console.log(stories.value.slice(startIndex))
-    return stories.value.slice(startIndex);
+    // console.log(JSON.stringify(storieWithDetails.value, null,2));
+    return storieWithDetails.value.slice(startIndex);
 });
 
-function formatText(text) {
-    let startIndex = text.indexOf('\n\n') + 2
-    return text.slice(startIndex)
+function obterCorrecao(texto) {
+    var correcaoIndex = texto.indexOf("Correção:");
+
+    if (correcaoIndex === -1) {
+        return "Correção não encontrada no texto.";
+    }
+
+    var correcaoTexto = texto.substring(correcaoIndex + "Correção:".length).trim();
+    return correcaoTexto;
 }
-const setToken = () =>{
+
+function removerCorrecao(texto) {
+    var correcaoIndex = texto.indexOf("Correção:");
+
+    if (correcaoIndex === -1) {
+        return "Correção não encontrada no texto, portanto retornando o texto completo.";
+    }
+
+    var textoSemCorrecao = texto.substring(0, correcaoIndex).trim();
+    return textoSemCorrecao;
+}
+
+
+const setToken = () => {
     token.value = localStorage.getItem('token');
     return token.value
 }
@@ -103,6 +144,7 @@ async function fetchStories() {
         const response = await axios.get(`http://127.0.0.1:5000/gethistorias?token=${token.value}`);
         const responseData = response.data;
         stories.value = [];
+
         for (const story of responseData) {
             stories.value.push({
                 id: story.id,
@@ -110,7 +152,6 @@ async function fetchStories() {
                 historia_output: story.UserStoriePadronizada
             });
         }
-        console.log(response.data)
         total_us.value = Array.isArray(responseData) ? responseData.length : Object.keys(responseData).length;
     } catch (error) {
         isNotError.value = false;
@@ -118,6 +159,41 @@ async function fetchStories() {
     }
 }
 
+
+async function sugests() {
+    setToken()
+    try {
+        const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell`);
+        const responseData = response.data;
+        smellDetails.value = [];
+        storieWithDetails.value = []
+        for (const smell of responseData) {
+            smellDetails.value.push({
+                details: smell.descricao_smell,
+                id: smell.id,
+                gpt: smell.id_gpt,
+                smell_id: smell.id_smell
+            });
+
+            stories.value.forEach((element) => {
+                console.log(element.id)
+                if (element.id == smell.id_gpt) {
+                    storieWithDetails.value.push({
+                        details: smell.descricao_smell,
+                        id: smell.id,
+                        gpt: smell.id_gpt,
+                        story_input: element.historia_input
+                    });
+                }
+            });
+        }
+        console.log(JSON.stringify(storieWithDetails.value, null, 2));
+        total_us.value = Array.isArray(storieWithDetails.value) ? storieWithDetails.value.length : Object.keys(storieWithDetails.value).length;
+    } catch (error) {
+        isNotError.value = false;
+        console.error('Erro ao buscar as histórias:', error);
+    }
+}
 
 
 
@@ -127,14 +203,11 @@ function setChartData(smells) {
     const valores = [];
 
     for (const chave in smells) {
-        const chaveFormatada = addLineBreaksToKey(chave); 
+        const chaveFormatada = addLineBreaksToKey(chave);
         labels.push(chaveFormatada);
-        console.log(chaveFormatada)
         valores.push(smells[chave]);
     }
     labels.sort((a, b) => a.length - b.length);
-
-    // console.log(labels)
 
     return {
         labels,
@@ -151,7 +224,7 @@ function setChartData(smells) {
 }
 
 function addLineBreaksToKey(chave) {
-  return chave.replace(/,/g, ',\n');
+    return chave.replace(/,/g, ',\n');
 }
 
 
@@ -195,9 +268,16 @@ function setChartOptions() {
 setChartOptions();
 </script>
 <style>
-.desc-total-users{
+.desc-total-users {
     font-size: max(1.5rem, 24px);
 }
+
+.b-register{
+    margin-top: 20px;
+    margin-right: 30px;
+    float: right;
+}
+
 .input-request-us {
     color: red;
 }
