@@ -176,6 +176,7 @@ export default {
   top: 0;
   left: 0;
   padding-top: 20px;
+  background-color: #D5CCF8;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
