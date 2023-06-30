@@ -231,6 +231,8 @@ export default {
     margin-left: 16%;
     display: flex;
     justify-content: center;
+    margin-right: 8rem;
+
 }
 
 .top-divs {

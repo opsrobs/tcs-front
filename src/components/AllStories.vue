@@ -2,7 +2,6 @@
     <div style="background-color: #F2EFFA;">
         <div style="margin-left: 16%; margin-right: 1%; background-color: #F2EFFA;">
             <SidebarView />
-            <!-- {{ storieWithDetails }} -->
             <div class="us-title">
                 <span> Acompanhe aqui seu historico de User Story</span>
             </div>
@@ -25,13 +24,14 @@
                     </div>
                     <Divider align="left" type="solid" />
                 </div>
+                <my-button style="background-color: #9d2bb4;" id="close-register" class=" pi pi-history" @click="registerView()" label=" Voltar" />
 
             </div>
         </div>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, defineProps, defineEmits, toRefs } from "vue";
 import Divider from 'primevue/divider';
 
 const axios = require('axios');
@@ -48,7 +48,19 @@ const token = ref('');
 let stories = ref([]);
 let smellDetails = ref([]);
 let storieWithDetails = ref([]);
-// let error_content = ref();
+const props = defineProps({
+    isRegister: {
+        type: Boolean,
+        required: true
+    }
+});
+const { valid } = toRefs(props);
+const emit = defineEmits(['update:isRegister']);
+function registerView() {
+    emit('update:isRegister', !props.isRegister);
+    console.log(valid)
+}
+
 
 onMounted(async () => {
     await Promise.all([fetchStories(), sugests()]);
@@ -141,6 +153,13 @@ function unionData() {
 
 </script>
 <style>
+#close-register {
+    top: 20px;
+    border: 2px;
+    position: fixed;
+    right: 25px;
+}
+
 .us-title {
     padding-top: 20px;
     font-weight: bold;

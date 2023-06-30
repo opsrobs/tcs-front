@@ -2,7 +2,7 @@
     <div>
         <SidebarView />
         <div v-if=isRegister>
-            <AllStories />
+            <AllStories v-model:isRegister="isRegister"  />
         </div>
         <div v-else>
 
@@ -47,7 +47,7 @@
             </div>
             <LoaderView v-show="isLoading" />
             <div class="b-register">
-                <my-button @click="registerView()" label="Ver Historico" />
+                <my-button style="background-color: #9d2bb4;" @click="registerView()" label="Ver Historico" />
             </div>
         </div>
 
@@ -62,7 +62,6 @@ import Chart from 'primevue/chart';
 const axios = require('axios');
 import Message from 'primevue/message';
 import Divider from 'primevue/divider';
-
 
 onMounted(() => {
     fetchSmells();
@@ -100,14 +99,12 @@ async function fetchSmells() {
 }
 
 function registerView() {
-    console.log(isRegister.value)
     return isRegister.value = !isRegister.value
 }
 
 const topThreeStories = computed(() => {
     const totalStories = storieWithDetails.value.length;
     const startIndex = Math.max(totalStories - 2, 0);
-    // console.log(JSON.stringify(storieWithDetails.value, null,2));
     return storieWithDetails.value.slice(startIndex).sort((a, b) => b.id - a.id);
 });
 
@@ -178,7 +175,6 @@ async function sugests() {
             });
 
             stories.value.forEach((element) => {
-                console.log(element.id)
                 if (element.id == smell.id_gpt) {
                     storieWithDetails.value.push({
                         details: smell.descricao_smell,
@@ -189,7 +185,6 @@ async function sugests() {
                 }
             });
         }
-        console.log(JSON.stringify(storieWithDetails.value, null, 2));
         total_us.value = Array.isArray(storieWithDetails.value) ? storieWithDetails.value.length : Object.keys(storieWithDetails.value).length;
     } catch (error) {
         isNotError.value = false;

@@ -12,8 +12,9 @@
                 <div class=" pi pi-times-circle" id="for-icons" @click="this.cancelNewInstruction()">
                 </div>
             </div>
-            <div v-show="habilitado"> 
-                <br/><span class="tips" v-show="!textSize">Você precisa inserir ainda mais {{ size }} caracteres na intrução</span>
+            <div v-show="habilitado">
+                <br /><span class="tips" v-show="!textSize">Você precisa inserir ainda mais {{ size }} caracteres na
+                    instrução</span>
 
             </div>
 
@@ -22,7 +23,10 @@
             <div class="instructions" v-for="i in instrucoes" :key="i.id">
                 <div class="flex-container">
                     <Textarea v-model="i.instrucao" autoResize rows="1" :readonly=true cols="400" />
-                    <div class=" pi pi-trash" id="for-icons" @click="this.readisValid(i)">
+                    <div v-if="!i.ativo">
+                        <div class=" pi pi-trash" id="for-icons" @click="this.readisValid(i)">
+                        </div>
+
                     </div>
                     <div class=" pi pi-plus" id="for-icons" @click="this.newInstruction()">
                     </div>
@@ -49,7 +53,8 @@ export default {
             instrucoes: [],
             token: null,
             novaInstrucao: '',
-            isSize:true,
+            isSize: true,
+            checked: false,
             valueOfReferer: 30,
             habilitado: false,
             classification: 'pi pi-send',
@@ -94,7 +99,13 @@ export default {
             return this.novaInstrucao.length > this.valueOfReferer;
         },
         size() {
-            return this.novaInstrucao.length - this.valueOfReferer;
+            let numberString = this.novaInstrucao.length - this.valueOfReferer;
+            const sizeOfText = numberString.toString();
+            if (sizeOfText.startsWith('-')) {
+                return Number(sizeOfText.substring(1));
+            }
+
+            return sizeOfText;
         },
     },
     methods: {
@@ -107,16 +118,16 @@ export default {
 
             }
         },
-        cancelNewInstruction(){
+        cancelNewInstruction() {
             this.habilitado = !this.habilitado
-            return 
+            return
         },
         newInstruction() {
             this.habilitado = !this.habilitado
             this.novaInstrucao
 
             if (this.habilitado) {
-            this.isSize=false
+                this.isSize = false
                 this.$nextTick(() => {
                     this.$refs.textareaElement.$el.focus();
                 });
@@ -124,10 +135,13 @@ export default {
 
         },
         actionClick() {
-            if (this.novaInstrucao != '' && this.size >29) {
+            if (this.novaInstrucao != '' && this.novaInstrucao.length > 29 && !this.checked) {
                 // this.SendRequest()
+                this.novaInstrucao = ''
+                this.checked = true
+                this.habilitado = false
             } else {
-                alert('invalido')
+                this.$toast.add({ severity: 'warn', summary: 'Delete', detail: `Sua instrução precia de mais ${this.size} caracteres`, life: 3000 })
             }
         },
         GetRequest() {
@@ -213,6 +227,7 @@ export default {
                 accept: () => {
                     this.DeleteRequest(instrucao.id)
                     this.opcao = 1
+                    this.GetRequest()
                     this.toastMessage(instrucao.instrucao)
                     this.$confirm.close();
                     //this.load()
@@ -240,13 +255,14 @@ export default {
 }
 </script>
 <style>
-.tips{
+.tips {
     font-size: 12px;
     margin-left: 15px;
     float: left !important;
     margin-top: -20px;
     color: red;
 }
+
 .flex-container {
     display: flex;
     align-items: center;
