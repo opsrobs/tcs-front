@@ -12,7 +12,7 @@
                     </div>
                     <div>
                         <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
-                            autoResize rows="17" cols="100" />
+                            autoResize rows="18" cols="100" />
                     </div>
                 </div>
                 <div class="top-divs">
@@ -21,20 +21,23 @@
                             <div class="title-area">
                                 <span style="margin: 20px;">Resultado Padronizado:</span>
                             </div>
+
                             <div class="input-request-us">
-                                <Textarea v-model="prototipoGpt.pattern_suggestion" disabled
-                                    placeholder="User Story Padronizada" class="user-text" autoResize rows="7"
-                                    cols="100" /><br />
+                                <div style="text-align: justify;" class="user-text-div">
+                                    {{ prototipoGpt.pattern_suggestion }}
+                                </div>
+
                             </div>
                         </div>
                         <div class="two">
-
                             <div class="title-area">
                                 <span style="margin: 20px;">Resultado Requirements Smells:</span>
                             </div>
                             <div class="output-request-us">
-                                <Textarea v-model="prototipoGpt.smells_id" class="user-text" disabled
-                                    placeholder="Smells identificados" autoResize rows="7" cols="100" />
+                                <div style="text-align: justify;" class="user-text-div">
+                                    {{ prototipoGpt.smells_id }}
+                                </div>
+
                             </div>
                         </div>
                     </span>
@@ -231,20 +234,50 @@ export default {
     margin-left: 16%;
     display: flex;
     justify-content: center;
-    margin-right: 8rem;
-
+    margin-right: 10rem;
+    margin-top: 10px;
 }
 
 .top-divs {
     justify-content: space-between;
-    align-items: center;
+    /* align-items: center;
     margin-top: -5px;
-    width: 100%;
     border-radius: 1%;
     height: 100%;
 
     display: flex;
-    grid-template-rows: auto;
+    grid-template-rows: auto; */
+}
+
+.user-text-div {
+    margin-right: 1vh;
+
+    overflow: auto;
+
+
+    border: 2px solid;
+    border-radius: 5px;
+    color: black;
+    position: relative;
+    background-color: white;
+    transition: border-color 0.3s ease-out;
+    width: 510px;
+    width: 84vh;
+    height: 200px;
+}
+
+
+.user-text {
+    margin-right: 1vh;
+    margin-bottom: -10px;
+    border: 2px solid;
+    border-radius: 5px;
+    color: black;
+    transition: border-color 0.3s ease-out;
+    width: max(95%, 15vh) !important;
+    height: 200px;
+
+    /* height: calc(15vh - 4px) !important; */
 }
 
 .title-area {
@@ -329,15 +362,6 @@ export default {
     color: rgb(36, 32, 32);
 }
 
-.user-text {
-    margin-right: 1vh;
-    border: 2px solid;
-    border-radius: 5px;
-    color: black;
-    transition: border-color 0.3s ease-out;
-    width: max(95%, 15vh) !important;
-    /* height: calc(15vh - 4px) !important; */
-}
 
 
 .user-text:hover {
@@ -355,18 +379,39 @@ export default {
 }
 
 @media screen and (max-height: 750px) {
-    .user-text {
+    /* .user-text {
         margin-right: 1vh;
         border-radius: 5px;
         transition: border-color 0.3s ease-out;
         width: max(95%, 15vh) !important;
         height: max(75%, 15vh) !important;
+    } */
+
+
+    .user-text-div {
+        margin-right: 1vh;
+        border: 2px solid;
+        border-radius: 5px;
+        color: black;
+        position: relative;
+        transition: border-color 0.3s ease-out;
+        width: 510px;
+        width: max(100%, 90vh) !important;
+        height: 200px;
     }
 
     .submit-story {
         position: relative;
         /* bottom: 1%; */
         /* top: -120px; */
+    }
+
+
+    .pos-button {
+        margin-left: 16%;
+        display: flex;
+        justify-content: center;
+        margin-right: 8rem;
     }
 
 }
@@ -391,4 +436,5 @@ export default {
     to {
         transform: rotate(1turn);
     }
-}</style>
+}
+</style>
