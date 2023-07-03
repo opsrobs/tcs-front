@@ -2,7 +2,7 @@
     <div>
         <SidebarView />
         <div v-if=isRegister>
-            <AllStories v-model:isRegister="isRegister"  />
+            <AllStories v-model:isRegister="isRegister" />
         </div>
         <div v-else>
 
@@ -97,6 +97,18 @@ async function fetchSmells() {
         error_content.value = '\nErro ao buscar os smells: ' + error.message;
     }
 }
+function validateText(text) {
+    if (text.length <= 100) {
+        console.log(text)
+        return text;
+    } else {
+        const trimmedText = text.substring(0, 100);
+        const lastSpaceIndex = trimmedText.lastIndexOf(' ');
+        const shortenedText = trimmedText.substring(0, lastSpaceIndex) + '...';
+        console.log(shortenedText)
+        return shortenedText;
+    }
+}
 
 function registerView() {
     return isRegister.value = !isRegister.value
@@ -112,7 +124,7 @@ function obterCorrecao(texto) {
     var correcaoIndex = texto.indexOf("Correção:");
 
     if (correcaoIndex === -1) {
-        return "Correção não encontrada no texto.";
+        return validateText(correcaoIndex);
     }
 
     var correcaoTexto = texto.substring(correcaoIndex + "Correção:".length).trim();
@@ -123,7 +135,7 @@ function removerCorrecao(texto) {
     var correcaoIndex = texto.indexOf("Correção:");
 
     if (correcaoIndex === -1) {
-        return "Correção não encontrada no texto, portanto retornando o texto completo.";
+        return validateText(correcaoIndex);
     }
 
     var textoSemCorrecao = texto.substring(0, correcaoIndex).trim();
