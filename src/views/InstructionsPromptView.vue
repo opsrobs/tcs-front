@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div v-show="habilitado">
-                <br /><span class="tips" v-show="!lengthMin">Você precisa inserir ainda mais {{ size }} caracteres na
+                <br /><span class="tips" v-show="!lengthMin">Você precisa inserir {{ size }} caracteres na
                     instrução</span>
 
             </div>
@@ -122,16 +122,7 @@ export default {
 
     },
     methods: {
-        validateText(text) {
-            if (text.length <= 100) {
-                return text;
-            } else {
-                const trimmedText = text.substring(0, 100);
-                const lastSpaceIndex = trimmedText.lastIndexOf(' ');
-                const shortenedText = trimmedText.substring(0, lastSpaceIndex) + '...';
-                return shortenedText;
-            }
-        },
+        
         valueMin(value) {
             return this.lengthMin = value
         },
@@ -295,6 +286,7 @@ export default {
 .flex-container {
     display: flex;
     align-items: center;
+    margin-top: 5vh;
     /* Para alinhar verticalmente no centro */
 }
 

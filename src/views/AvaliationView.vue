@@ -24,7 +24,9 @@
 
                             <div class="input-request-us">
                                 <div style="text-align: justify;" class="user-text-div">
-                                    {{ prototipoGpt.pattern_suggestion }}
+                                    <div class="content-return">
+                                        {{ prototipoGpt.pattern_suggestion }}
+                                    </div>
                                 </div>
 
                             </div>
@@ -35,7 +37,9 @@
                             </div>
                             <div class="output-request-us">
                                 <div style="text-align: justify;" class="user-text-div">
-                                    {{ prototipoGpt.smells_id }}
+                                    <div class="content-return">
+                                        {{ prototipoGpt.smells_id }}
+                                    </div>
                                 </div>
 
                             </div>
@@ -97,6 +101,7 @@ export default {
                 pattern_suggestion: null,
                 smells_id: null
             },
+            responseTime: null,
             token: '',
             username: '',
             nome: '',
@@ -110,15 +115,32 @@ export default {
         },
     },
     methods: {
-        sendRequest(prototipo) {
+
+        formatTime(milliseconds) {
+            const seconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            if (hours > 0) {
+                return `${hours} hour(s)`;
+            } else if (minutes > 0) {
+                return `${minutes} minute(s)`;
+            } else {
+                return `${seconds} second(s)`;
+            }
+        },
+
+        async sendRequest(prototipo) {
             this.getUserData()
             this.isLoading = true
             const formData = new FormData();
             formData.append('prompt', prototipo);
-            //   formData.append('campo2', 'valor2');
             console.log(Array.from(formData.entries()));
+            const start = Date.now();
+            let end = Date.now();
 
-            axios({
+
+            await axios({
                 url: `http://127.0.0.1:5000/historias?token=${this.token}`,
                 method: 'POST',
                 data: formData
@@ -130,16 +152,17 @@ export default {
                     this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell).trimStart(),
                         this.isLoading = false
                     this.toastMessage(response.status)
-
-                    // this.getResponse(this.prototipoGpt.pattern_suggestion)
-
+                    end = Date.now();
+                    this.responseTime = end - start;
                 })
                 .catch(error => {
                     console.error(error);
                     this.toastMessage(error.code),
-                        this.isLoading = false
+                        this.isLoading = false,
+                        end = Date.now();
 
                 });
+            console.log(this.formatTime(this.responseTime));
 
         },
         toastMessage(item) {
@@ -210,11 +233,16 @@ export default {
 
 </script>
 <style>
+.content-return {
+    margin: 4px;
+    color: #383238
+}
+
 .cards-area {
     position: relative;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    top: 2vh;
+    top: 5vh;
     /* grid-auto-rows: 200px; */
 }
 
@@ -263,6 +291,7 @@ export default {
     transition: border-color 0.3s ease-out;
     width: 510px;
     width: 84vh;
+    position: relative;
     height: 200px;
 }
 
@@ -396,7 +425,8 @@ export default {
         position: relative;
         transition: border-color 0.3s ease-out;
         width: 510px;
-        width: max(100%, 90vh) !important;
+        position: relative;
+
         height: 200px;
     }
 

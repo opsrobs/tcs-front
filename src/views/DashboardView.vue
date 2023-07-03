@@ -128,7 +128,7 @@ function obterCorrecao(texto) {
     }
 
     var correcaoTexto = texto.substring(correcaoIndex + "Correção:".length).trim();
-    return correcaoTexto;
+    return validateText(correcaoTexto);
 }
 
 function removerCorrecao(texto) {
@@ -139,7 +139,7 @@ function removerCorrecao(texto) {
     }
 
     var textoSemCorrecao = texto.substring(0, correcaoIndex).trim();
-    return textoSemCorrecao;
+    return validateText(textoSemCorrecao);
 }
 
 

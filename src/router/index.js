@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '../views/DashboardView.vue'
 import CreateAccount from '../views/AccountView.vue'
 import AvaliationView from '../views/AvaliationView.vue'
+import TermsOfUseView from '../views/TermsOfUseView.vue'
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
     path: '/Account',
     name: 'Create Account',
     component: CreateAccount
+  },
+  {
+    path: '/Termos',
+    name: 'Termos de uso',
+    component: TermsOfUseView
   },
 ]
 
