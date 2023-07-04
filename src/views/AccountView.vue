@@ -7,7 +7,7 @@
                 <div class="shape"></div>
                 <div class="shape"></div>
             </div>
-            <form @submit.prevent="sendRequestLogin()">
+            <form @submit.prevent="formIsLogin()">
                 <h3 v-if="isVisible">{{ checkTittle() }}</h3>
 
                 <label class="signup" v-if="!isVisible">Nome</label>
@@ -33,7 +33,7 @@
 
                 <a href="#" class="link-create-account" style="color: rgb(0, 68, 255);" v-if="!isVisible">Termos e
                     condições</a>
-                <button @click="sendRequestSignUp()" v-if="!isVisible" class="create-account-button">Registrar</button>
+                <button @click="formIsRegister()" v-if="!isVisible" class="create-account-button">Registrar</button>
 
                 <span v-if="!isVisible" class="create-account">Já possui conta?</span>
                 <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
@@ -56,6 +56,8 @@ export default {
         return {
             new_pass: '',
             isValid: true,
+            isNewUser: false,
+            isLogin: false,
             usuario: {
                 email: '',
                 nome: '',
@@ -88,6 +90,8 @@ export default {
                 this.usuario.nome = '',
                 this.usuario.senha = ''
 
+            this.isLogin = !this.isLogin
+
             return this.isVisible == true
                 ? this.isVisible = false
                 : this.isVisible = true
@@ -99,6 +103,43 @@ export default {
                 return parts[0];
             } else {
                 return null;
+            }
+        },
+        emailIsValid(email) {
+            const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+
+            if (emailRegex.test(email)) {
+                console.log("O email é válido.");
+                return true
+            } else {
+                console.log("O email é inválido.");
+                return false
+            }
+        },
+        formIsRegister() {
+            if(this.emailIsValid(this.usuario.email)){
+                if (this.usuario.senha === this.new_pass && this.new_pass != '') {
+                    console.log("success")
+                    this.isNewUser = true
+                    this.isLogin = false
+                    this.sendRequestSignUp()
+                    console.log(this.isVisible)
+                } else if (this.usuario.senha != this.new_pass) {
+                    this.isNewUser = true
+                    this.isLogin = false
+                    this.isValid = false
+                }
+
+            }
+        },
+        formIsLogin() {
+            if (!this.isNewUser && !this.isLogin) {
+                console.log("successss")
+                console.log(this.isVisible)
+                this.sendRequestLogin()
+            } else {
+                console.log("")
+                // this.sendRequestLogin()
             }
         },
         async sendRequestSignUp() {
@@ -116,8 +157,8 @@ export default {
                     data: formData
                 });
                 console.log(response.status);
-                this.sendRequestLogin()
             } catch (error) {
+                console.log(error);
                 this.toastMessage(error.code);
             } finally {
                 this.isLoading = false;
