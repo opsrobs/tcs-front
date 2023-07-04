@@ -11,7 +11,7 @@
                         <span style="margin: 20px;">Adicione sua História de Usuário abaixo:</span>
                     </div>
                     <div>
-                        <Textarea v-model="prototipoGpt.input_us" class="user-text" placeholder="Insira AQUI sua User Story"
+                        <Textarea v-model="prototipoGpt.input_us" class="user-text" 
                             autoResize rows="18" cols="100" />
                     </div>
                 </div>
@@ -263,7 +263,7 @@ export default {
     display: flex;
     justify-content: center;
     margin-right: 10rem;
-    margin-top: 10px;
+    margin-top: 35px;
 }
 
 .top-divs {
@@ -286,8 +286,9 @@ export default {
     border: 2px solid;
     border-radius: 5px;
     color: black;
+    
     position: relative;
-    background-color: white;
+    background-color: rgba(201, 201, 201, 0.378);
     transition: border-color 0.3s ease-out;
     width: 510px;
     width: 84vh;

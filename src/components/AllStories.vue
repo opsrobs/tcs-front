@@ -33,6 +33,8 @@
 <script setup>
 import { ref, onMounted, computed, defineProps, defineEmits, toRefs } from "vue";
 import Divider from 'primevue/divider';
+import SidebarView from '../components/SidebarView.vue';
+
 
 const axios = require('axios');
 
@@ -65,7 +67,6 @@ function registerView() {
 onMounted(async () => {
     await Promise.all([fetchStories(), sugests()]);
     unionData();
-    // console.log(JSON.stringify(storieWithDetails.value, null, 2));
 
 });
 
@@ -108,7 +109,6 @@ async function fetchStories() {
         const response = await axios.get(`http://127.0.0.1:5000/gethistorias?token=${token.value}`);
         const responseData = response.data;
         stories.value = responseData;
-        console.log(JSON.stringify(stories.value, null, 2))
         sugests()
         total_us.value = Array.isArray(responseData) ? responseData.length : Object.keys(responseData).length;
     } catch (error) {
@@ -123,7 +123,6 @@ async function sugests() {
         const responseData = response.data;
         smellDetails.value = responseData;
 
-        console.log(JSON.stringify(smellDetails.value, null, 2));
         total_us.value = Array.isArray(storieWithDetails.value) ? storieWithDetails.value.length : Object.keys(storieWithDetails.value).length;
         unionData()
     } catch (error) {
@@ -133,19 +132,24 @@ async function sugests() {
 }
 function unionData() {
     storieWithDetails.value = [];
+    let lastId = 0;
     for (const smell of smellDetails.value) {
-        // console.log(JSON.stringify(stories.value, null, 2))
-        stories.value.forEach((element) => {
-            if (element.id == smell.id_gpt) {
-                storieWithDetails.value.push({
-                    details: smell.descricao_smell,
-                    id: smell.id,
-                    gpt: smell.id_gpt,
-                    story_input: element.UserStorie,
-                    story_pattern: element.UserStoriePadronizada
-                });
-            }
-        });
+        if(lastId == smell.id_gpt){
+            console.log("")
+        }else{
+            stories.value.forEach((element) => {
+                if (element.id == smell.id_gpt) {
+                    storieWithDetails.value.push({
+                        details: smell.descricao_smell,
+                        id: smell.id,
+                        gpt: smell.id_gpt,
+                        story_input: element.UserStorie,
+                        story_pattern: element.UserStoriePadronizada
+                    });
+                    lastId = smell.id_gpt
+                }
+            });
+        }
     }
 
     storieWithDetails.value.sort((a, b) => b.id - a.id);

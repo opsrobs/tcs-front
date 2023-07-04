@@ -99,13 +99,11 @@ async function fetchSmells() {
 }
 function validateText(text) {
     if (text.length <= 100) {
-        console.log(text)
         return text;
     } else {
         const trimmedText = text.substring(0, 100);
         const lastSpaceIndex = trimmedText.lastIndexOf(' ');
         const shortenedText = trimmedText.substring(0, lastSpaceIndex) + '...';
-        console.log(shortenedText)
         return shortenedText;
     }
 }
@@ -173,6 +171,7 @@ async function fetchStories() {
 
 async function sugests() {
     setToken()
+    let lastId =0;
     try {
         const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell`);
         const responseData = response.data;
@@ -185,17 +184,21 @@ async function sugests() {
                 gpt: smell.id_gpt,
                 smell_id: smell.id_smell
             });
-
-            stories.value.forEach((element) => {
-                if (element.id == smell.id_gpt) {
-                    storieWithDetails.value.push({
-                        details: smell.descricao_smell,
-                        id: smell.id,
-                        gpt: smell.id_gpt,
-                        story_input: element.historia_input
-                    });
-                }
-            });
+            if(lastId == smell.id_gpt) {
+            console.log(true)
+            }else{
+                stories.value.forEach((element) => {
+                    if (element.id == smell.id_gpt) {
+                        storieWithDetails.value.push({
+                            details: smell.descricao_smell,
+                            id: smell.id,
+                            gpt: smell.id_gpt,
+                            story_input: element.historia_input
+                        });
+                        lastId= smell.id_gpt
+                    }
+                });
+            }
         }
         total_us.value = Array.isArray(storieWithDetails.value) ? storieWithDetails.value.length : Object.keys(storieWithDetails.value).length;
     } catch (error) {

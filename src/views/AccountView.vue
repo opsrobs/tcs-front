@@ -1,6 +1,7 @@
 <template>
     <div style="background-color: aqua;">
         <SidebarView />
+
         <body>
             <div class="background">
                 <div class="shape"></div>
@@ -26,12 +27,17 @@
                 <button v-show="isVisible" class="login-submit">Login</button>
 
                 <span v-if="isVisible" class="create-account">Não possui conta?</span>
+
+
                 <br /><a v-if="isVisible" class="link-create-account" @click="createAccount()" href="#">Crie sua conta!</a>
+
+                <a href="#" class="link-create-account" style="color: rgb(0, 68, 255);" v-if="!isVisible">Termos e
+                    condições</a>
+                <button @click="sendRequestSignUp()" v-if="!isVisible" class="create-account-button">Registrar</button>
+
                 <span v-if="!isVisible" class="create-account">Já possui conta?</span>
                 <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
                     conta!</a><br />
-
-                <button @click="sendRequestSignUp()" v-if="!isVisible" class="create-account-button">Registrar</button>
 
             </form>
         </body>
@@ -55,7 +61,7 @@ export default {
                 nome: '',
                 senha: ''
             },
-            showSidebar:false,
+            showSidebar: false,
             isVisible: true,
             //=====================
 
@@ -67,7 +73,6 @@ export default {
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const payload = JSON.parse(window.atob(base64));
-            console.log(username)
             // Agora que temos o payload, podemos extrair o nome do usuário e a data de expiração.
             const expiration = payload.exp;
 
@@ -83,7 +88,6 @@ export default {
                 this.usuario.nome = '',
                 this.usuario.senha = ''
 
-            console.log(this.isVisible)
             return this.isVisible == true
                 ? this.isVisible = false
                 : this.isVisible = true
@@ -104,7 +108,6 @@ export default {
             formData.append('email', this.usuario.email);
             formData.append('senha', this.usuario.senha);
 
-            console.log(Array.from(formData.entries()));
 
             try {
                 const response = await axios({
@@ -112,11 +115,9 @@ export default {
                     method: 'POST',
                     data: formData
                 });
-                console.log(response.data);
+                console.log(response.status);
                 this.sendRequestLogin()
             } catch (error) {
-                console.error(error);
-                this.$router.push('/DashboardView');
                 this.toastMessage(error.code);
             } finally {
                 this.isLoading = false;
@@ -140,12 +141,10 @@ export default {
                     }
                 });
 
-                console.log(response.data);
                 this.setUserData(response.data.token, response.data.nome);
                 this.showSidebar = true;
                 this.$router.push('/DashboardView');
             } catch (error) {
-                console.error(error);
                 this.toastMessage("An error occurred during login.");
                 this.$router.push('/DashboardView');
             } finally {
@@ -154,7 +153,6 @@ export default {
         },
 
         checkTittle() {
-            console.log(this.isVisible)
             return this.isVisible ? 'Acesse a Plataforma' : 'Criar nova conta'
         }
     },
