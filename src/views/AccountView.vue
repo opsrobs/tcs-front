@@ -1,7 +1,7 @@
 <template>
     <div style="background-color: aqua;">
         <SidebarView />
-
+        <Toast />
         <body>
             <div class="background">
                 <div class="shape"></div>
@@ -50,6 +50,8 @@
 // import firebaseConfig from '../../firebaseConfig';
 // import userChart from './../states/chartstate'
 import SidebarView from '@/components/SidebarView.vue';
+import Toast from 'primevue/toast';
+
 import axios from 'axios';
 export default {
     data() {
@@ -86,6 +88,7 @@ export default {
             // localStorage.setItem('nome', this.usuario.nome);
         },
         createAccount() {
+            this.isValid = true;
             this.usuario.email = '',
                 this.usuario.nome = '',
                 this.usuario.senha = ''
@@ -96,7 +99,12 @@ export default {
                 ? this.isVisible = false
                 : this.isVisible = true
         },
+        toastMessage(item, msg) {
+            return item != 200
+                ? this.$toast.add({ severity: 'error', detail: msg, life: 3000 })
+                : this.$toast.add({ severity: 'success', detail: ' Solicitação realizada com sucesso!!!', life: 3000 })
 
+        },
         getUsernameFromEmail(email) {
             const parts = email.split('@');
             if (parts.length > 0) {
@@ -113,11 +121,12 @@ export default {
                 return true
             } else {
                 console.log("O email é inválido.");
+                this.toastMessage(0, "Verifique o email informado!")
                 return false
             }
         },
         formIsRegister() {
-            if(this.emailIsValid(this.usuario.email)){
+            if (this.emailIsValid(this.usuario.email)) {
                 if (this.usuario.senha === this.new_pass && this.new_pass != '') {
                     console.log("success")
                     this.isNewUser = true
@@ -186,8 +195,7 @@ export default {
                 this.showSidebar = true;
                 this.$router.push('/DashboardView');
             } catch (error) {
-                this.toastMessage("An error occurred during login.");
-                this.$router.push('/DashboardView');
+                this.toastMessage(error.code,"Usuario ou senha invalidos. Verifique as credenciais!!!");
             } finally {
                 this.isLoading = false;
             }
@@ -198,7 +206,8 @@ export default {
         }
     },
     components: {
-        SidebarView
+        SidebarView,
+        Toast
     }
 }
 </script>
