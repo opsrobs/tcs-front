@@ -160,7 +160,7 @@ export default {
                     console.log(response.data),
                         this.prototipoGpt.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototipoGpt.pattern_suggestion)
-                    this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell),
+                    this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell).trimStart(),
                         this.isLoading = false
                     this.toastMessage(response.status)
                     end = Date.now();
