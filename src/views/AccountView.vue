@@ -2,54 +2,64 @@
     <div style="background-color: aqua;">
         <SidebarView />
         <Toast />
-        <body>
-            <div class="background">
-                <div class="shape"></div>
-                <div class="shape"></div>
-            </div>
-            <form @submit.prevent="formIsLogin()">
-                <h3 v-if="isVisible">{{ checkTittle() }}</h3>
+        <div v-if="!isLoading">
 
-                <label class="signup" v-if="!isVisible">Nome</label>
-                <input class="signup" v-if="!isVisible" type="text" v-model="usuario.nome" required placeholder="Nome"
-                    id="nome">
+            <body>
+                <div class="background">
+                    <div class="shape"></div>
+                    <div class="shape"></div>
+                </div>
+                <form @submit.prevent="formIsLogin()">
+                    <h3 v-if="isVisible">{{ checkTittle() }}</h3>
 
-
-                <label for="username">Email</label>
-                <input type="text" v-model="usuario.email" required placeholder="Email" id="username">
-
-                <label for="password">Senha</label>
-                <input type="password" v-model="usuario.senha" required placeholder="Senha" id="password">
-                <label v-if="!isVisible" for="password">Confirme a senha</label>
-                <input v-if="!isVisible" type="password" v-model="new_pass" required placeholder="Senha" id="password">
-                <span class="review-password" v-if="!isValid">As senhas não conferem</span>
-
-                <button v-show="isVisible" class="login-submit">Login</button>
-
-                <span v-if="isVisible" class="create-account">Não possui conta?</span>
+                    <label class="signup" v-if="!isVisible">Nome</label>
+                    <input class="signup" v-if="!isVisible" type="text" v-model="usuario.nome" required placeholder="Nome"
+                        id="nome">
 
 
-                <br /><a v-if="isVisible" class="link-create-account" @click="createAccount()" href="#">Crie sua conta!</a>
+                    <label for="username">Email</label>
+                    <input type="text" v-model="usuario.email" required placeholder="Email" id="username">
 
-                <a href="#" class="link-create-account" style="color: rgb(0, 68, 255);" v-if="!isVisible">Termos e
-                    condições</a>
-                <button @click="formIsRegister()" v-if="!isVisible" class="create-account-button">Registrar</button>
+                    <label for="password">Senha</label>
+                    <input type="password" v-model="usuario.senha" required placeholder="Senha" id="password">
+                    <label v-if="!isVisible" for="password">Confirme a senha</label>
+                    <input v-if="!isVisible" type="password" v-model="new_pass" required placeholder="Senha" id="password">
+                    <span class="review-password" v-if="!isValid">As senhas não conferem</span>
 
-                <span v-if="!isVisible" class="create-account">Já possui conta?</span>
-                <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
-                    conta!</a><br />
+                    <button v-show="isVisible" class="login-submit">Login</button>
 
-            </form>
-        </body>
-
+                    <span v-if="isVisible" class="create-account">Não possui conta?</span>
 
 
+                    <br /><a v-if="isVisible" class="link-create-account" @click="createAccount()" href="#">Crie sua
+                        conta!</a>
+
+                    <a href="#" class="link-create-account" style="color: rgb(0, 68, 255);" v-if="!isVisible">Termos e
+                        condições</a>
+                    <button @click="formIsRegister()" v-if="!isVisible" class="create-account-button">Registrar</button>
+
+                    <span v-if="!isVisible" class="create-account">Já possui conta?</span>
+                    <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
+                        conta!</a><br />
+
+                </form>
+            </body>
+
+        </div>
+        <div v-else>
+            <span class="loader">Loading ...</span>
+            <LoaderView v-show="!isLoading" />
+        </div>
+
+
+        
     </div>
 </template>
 <script>
 // import firebaseConfig from '../../firebaseConfig';
 // import userChart from './../states/chartstate'
 import SidebarView from '@/components/SidebarView.vue';
+import LoaderView from '@/components/LoaderView.vue';
 import Toast from 'primevue/toast';
 
 import axios from 'axios';
@@ -60,6 +70,7 @@ export default {
             isValid: true,
             isNewUser: false,
             isLogin: false,
+            isLoading: false,
             usuario: {
                 email: '',
                 nome: '',
@@ -127,6 +138,7 @@ export default {
         },
         formIsRegister() {
             if (this.emailIsValid(this.usuario.email)) {
+                this.isLoading = true;
                 if (this.usuario.senha === this.new_pass && this.new_pass != '') {
                     console.log("success")
                     this.isNewUser = true
@@ -142,6 +154,7 @@ export default {
             }
         },
         formIsLogin() {
+            this.isLoading = true
             if (!this.isNewUser && !this.isLogin) {
                 console.log("successss")
                 console.log(this.isVisible)
@@ -166,6 +179,7 @@ export default {
                     data: formData
                 });
                 console.log(response.status);
+                this.sendRequestLogin()
             } catch (error) {
                 console.log(error);
                 this.toastMessage(error.code);
@@ -195,7 +209,7 @@ export default {
                 this.showSidebar = true;
                 this.$router.push('/DashboardView');
             } catch (error) {
-                this.toastMessage(error.code,"Usuario ou senha invalidos. Verifique as credenciais!!!");
+                this.toastMessage(error.code, "Usuario ou senha invalidos. Verifique as credenciais!!!");
             } finally {
                 this.isLoading = false;
             }
@@ -207,7 +221,8 @@ export default {
     },
     components: {
         SidebarView,
-        Toast
+        Toast,
+        LoaderView 
     }
 }
 </script>
@@ -218,6 +233,17 @@ export default {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+.loader {
+    border-radius: 50%;
+    height: 50px;
+    width: 100px;
+    color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
 }
 
 body {
@@ -403,5 +429,4 @@ input:focus {
         left: 50%;
         padding: 20px 30px;
     }
-}
-</style>
+}</style>

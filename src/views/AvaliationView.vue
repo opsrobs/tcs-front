@@ -11,7 +11,7 @@
                         <span style="margin: 20px;">Adicione sua História de Usuário abaixo:</span>
                     </div>
                     <div>
-                        <Textarea v-model="prototipoGpt.input_us" class="user-text" 
+                        <Textarea v-on:keyup.enter="submitRequest" v-model="prototipoGpt.input_us" class="user-text" 
                             autoResize rows="18" cols="100" />
                     </div>
                 </div>
@@ -115,7 +115,12 @@ export default {
         },
     },
     methods: {
-
+        submitRequest: function() {
+            // Envie sua requisição aqui
+            if(this.isTextareaValid){
+                console.log('Enter foi pressionado!');
+            }
+        },
         formatTime(milliseconds) {
             const seconds = Math.floor(milliseconds / 1000);
             const minutes = Math.floor(seconds / 60);
@@ -129,16 +134,22 @@ export default {
                 return `${seconds} second(s)`;
             }
         },
+        validateEndRequest(text){
+            if(text.endsWith(".")){
+                return text
+            }else
+                return text + "."
+        },
 
         async sendRequest(prototipo) {
             this.getUserData()
             this.isLoading = true
             const formData = new FormData();
-            formData.append('prompt', prototipo);
+            formData.append('prompt', this.validateEndRequest(prototipo));
             console.log(Array.from(formData.entries()));
             const start = Date.now();
             let end = Date.now();
-
+            console.log(this.validateEndRequest(prototipo));
 
             await axios({
                 url: `http://127.0.0.1:5000/historias?token=${this.token}`,
@@ -149,7 +160,7 @@ export default {
                     console.log(response.data),
                         this.prototipoGpt.pattern_suggestion = response.data.historia.trimStart(),
                         console.log(this.prototipoGpt.pattern_suggestion)
-                    this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell).trimStart(),
+                    this.prototipoGpt.smells_id = this.removeSpaces(response.data.smell),
                         this.isLoading = false
                     this.toastMessage(response.status)
                     end = Date.now();
