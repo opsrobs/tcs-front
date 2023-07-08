@@ -33,10 +33,20 @@
 
                     <br /><a v-if="isVisible" class="link-create-account" @click="createAccount()" href="#">Crie sua
                         conta!</a>
+                    <div class="chbox-div">
+                        <input v-if="!isVisible" class="chbox" type="checkbox" v-model="termsAccepted" id="terms">
+                        <div>
+                            <span>
+                                <router-link v-if="!isVisible" class="link-create-account-terms" to="/Termos"
+                                    style="color: rgb(0, 68, 255);">Termos e condições</router-link>
+                                <!-- <a v-if="!isVisible" href="#" class="link-create-account-terms"
+                                    style="color: rgb(0, 68, 255);">Termos e condições</a> -->
+                            </span>
+                        </div>
 
-                    <a href="#" class="link-create-account" style="color: rgb(0, 68, 255);" v-if="!isVisible">Termos e
-                        condições</a>
-                    <button @click="formIsRegister()" v-if="!isVisible" class="create-account-button">Registrar</button>
+                    </div>
+                    <button type="button" @click="formIsRegister()" v-if="!isVisible"
+                        class="create-account-button">Registrar</button>
 
                     <span v-if="!isVisible" class="create-account">Já possui conta?</span>
                     <br /><a v-if="!isVisible" class="link-create-account" @click="createAccount()" href="#">Acesse sua
@@ -50,9 +60,6 @@
             <span class="loader">Loading ...</span>
             <LoaderView v-show="!isLoading" />
         </div>
-
-
-        
     </div>
 </template>
 <script>
@@ -60,6 +67,7 @@
 // import userChart from './../states/chartstate'
 import SidebarView from '@/components/SidebarView.vue';
 import LoaderView from '@/components/LoaderView.vue';
+// import Checkbox from 'primevue/checkbox';
 import Toast from 'primevue/toast';
 
 import axios from 'axios';
@@ -71,6 +79,7 @@ export default {
             isNewUser: false,
             isLogin: false,
             isLoading: false,
+            termsAccepted: false,
             usuario: {
                 email: '',
                 nome: '',
@@ -137,25 +146,29 @@ export default {
             }
         },
         formIsRegister() {
+            console.log(this.termsAccepted)
             if (this.emailIsValid(this.usuario.email)) {
-                this.isLoading = true;
-                if (this.usuario.senha === this.new_pass && this.new_pass != '') {
-                    console.log("success")
-                    this.isNewUser = true
-                    this.isLogin = false
-                    this.sendRequestSignUp()
-                    console.log(this.isVisible)
-                } else if (this.usuario.senha != this.new_pass) {
-                    this.isNewUser = true
-                    this.isLogin = false
-                    this.isValid = false
-                }
+                if (this.termsAccepted) {
+                    if (this.usuario.senha === this.new_pass && this.new_pass != '') {
+                        console.log("success")
+                        this.isNewUser = true
+                        this.isLogin = false
+                        this.isLoading = true;
+                        this.sendRequestSignUp()
+                        console.log(this.isVisible)
+                    } else if (this.usuario.senha != this.new_pass) {
+                        this.isNewUser = true
+                        this.isLogin = false
+                        this.isValid = false
+                    }
 
+                }
+                this.toastMessage(0, "Os termos de uso precisam ser aceitos!")
             }
         },
         formIsLogin() {
-            this.isLoading = true
             if (!this.isNewUser && !this.isLogin) {
+                this.isLoading = true
                 console.log("successss")
                 console.log(this.isVisible)
                 this.sendRequestLogin()
@@ -163,6 +176,7 @@ export default {
                 console.log("")
                 // this.sendRequestLogin()
             }
+            console.log(this.isLoading)
         },
         async sendRequestSignUp() {
             this.isLoading = true
@@ -222,7 +236,8 @@ export default {
     components: {
         SidebarView,
         Toast,
-        LoaderView 
+        LoaderView,
+        // Checkbox
     }
 }
 </script>
@@ -233,6 +248,28 @@ export default {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+.act-terms {
+    font-size: 12px;
+}
+
+.chbox {
+    margin-top: 5px;
+    width: 10px;
+}
+
+.link-create-account-terms {
+    font-size: 10px;
+}
+
+.chbox-div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: -35px;
+    margin-bottom: -15px;
 }
 
 .loader {
@@ -272,6 +309,12 @@ input[type="submit"] {
     transition: background-color 0.3s ease;
 }
 
+input[type="checkbox"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+
 .create-account-button:before,
 .login-submit:before,
 input[type="button"]:before,
@@ -284,7 +327,6 @@ input[type="submit"]:before {
     left: 0;
     z-index: -1;
     margin: -2px;
-    /* this creates the border effect */
     border-radius: inherit;
     background: linear-gradient(90deg, rgb(247, 67, 157), rgb(134, 62, 175));
     opacity: 0;
@@ -429,4 +471,5 @@ input:focus {
         left: 50%;
         padding: 20px 30px;
     }
-}</style>
+}
+</style>

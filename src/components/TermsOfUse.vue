@@ -1,6 +1,8 @@
 <template>
     <div class="results__agreement-preview">
+        <SidebarView />
         <div class="j-content">
+                <router-link class="btn-term" to="/Account">Voltar</router-link>
             <h4> Termos e Condições de Uso </h4> Seja bem-vindo ao Prototipo de Avaliação da Qualidade de Historia de
             Usuario!
             <p></p>
@@ -183,15 +185,40 @@
                 responsáveis
                 por perdas e danos de qualquer natureza. </p>
         </div>
+
     </div>
 </template>
+<script>
+import SidebarView from './SidebarView.vue';
+
+export default {
+    components: {
+        SidebarView
+    },
+    //...rest of your component's options like data, methods, etc.
+}
+</script>
 
 <style>
 .results__agreement-preview {
+    margin-left: 15%;
     text-align: justify;
 }
+.btn-term{
+    top: 20px;
+    border: 2px;
+    position: fixed;
+    right: 25px;
 
-.j-content{
+    background-color: blueviolet;
+    width: 70px;
+    height: 30px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-top: 2px;
+}
+
+.j-content {
     margin: 25px;
 }
 </style>
