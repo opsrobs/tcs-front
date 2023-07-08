@@ -83,16 +83,19 @@ let error_content = ref();
 
 
 async function fetchSmells() {
+    setToken()
     try {
-        const response = await axios.get('http://127.0.0.1:5000/get_smell_status');
+        const response = await axios.get(`http://127.0.0.1:5000/get_smell_status?token=${token.value}`);
         smellsList.value = response.data;
         isLoading.value = false;
         chartData.value = setChartData(smellsList.value);
+        console.log(response.data) // <---- arrumar
         sugests();
 
     } catch (error) {
         isNotError.value = false;
         isLoading.value = false;
+        console.log(error);
         console.error('Erro ao buscar os smells:', error);
         error_content.value = '\nErro ao buscar os smells: ' + error.message;
     }
@@ -171,9 +174,9 @@ async function fetchStories() {
 
 async function sugests() {
     setToken()
-    let lastId =0;
+    let lastId = 0;
     try {
-        const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell`);
+        const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell?token=${token.value}`);
         const responseData = response.data;
         smellDetails.value = [];
         storieWithDetails.value = []
@@ -184,9 +187,9 @@ async function sugests() {
                 gpt: smell.id_gpt,
                 smell_id: smell.id_smell
             });
-            if(lastId == smell.id_gpt) {
-            console.log(true)
-            }else{
+            if (lastId == smell.id_gpt) {
+                console.log(true)
+            } else {
                 stories.value.forEach((element) => {
                     if (element.id == smell.id_gpt) {
                         storieWithDetails.value.push({
@@ -195,7 +198,7 @@ async function sugests() {
                             gpt: smell.id_gpt,
                             story_input: element.historia_input
                         });
-                        lastId= smell.id_gpt
+                        lastId = smell.id_gpt
                     }
                 });
             }

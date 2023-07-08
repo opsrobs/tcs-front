@@ -119,10 +119,9 @@ async function fetchStories() {
 async function sugests() {
     setToken()
     try {
-        const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell`);
+        const response = await axios.get(`http://127.0.0.1:5000/gpt_has_smell?token=${token.value}`);
         const responseData = response.data;
         smellDetails.value = responseData;
-
         total_us.value = Array.isArray(storieWithDetails.value) ? storieWithDetails.value.length : Object.keys(storieWithDetails.value).length;
         unionData()
     } catch (error) {
@@ -133,6 +132,7 @@ async function sugests() {
 function unionData() {
     storieWithDetails.value = [];
     let lastId = 0;
+    let cont =0;
     for (const smell of smellDetails.value) {
         if(lastId == smell.id_gpt){
             console.log("")
@@ -150,9 +150,14 @@ function unionData() {
                 }
             });
         }
+        cont++
+
     }
+    console.log(cont)
+
 
     storieWithDetails.value.sort((a, b) => b.id - a.id);
+
 }
 
 </script>

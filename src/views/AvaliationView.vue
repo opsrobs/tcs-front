@@ -142,14 +142,18 @@ export default {
         },
 
         async sendRequest(prototipo) {
+            let text = prototipo
+            // this.prototipoGpt.input_us = '';
+            this.prototipoGpt.pattern_suggestion='';
+            this.prototipoGpt.smells_id='';
             this.getUserData()
             this.isLoading = true
             const formData = new FormData();
-            formData.append('prompt', this.validateEndRequest(prototipo));
+            formData.append('prompt', this.validateEndRequest(text));
             console.log(Array.from(formData.entries()));
             const start = Date.now();
             let end = Date.now();
-            console.log(this.validateEndRequest(prototipo));
+            console.log(this.validateEndRequest(text));
 
             await axios({
                 url: `http://127.0.0.1:5000/historias?token=${this.token}`,
